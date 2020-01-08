@@ -1,4 +1,4 @@
-/*
+﻿/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -64,7 +64,7 @@ public class View extends HBox implements Observer{
         configComponents();
         configListeners();
         Scene scene = new Scene(this, 800, 400);
-        primaryStage.setTitle("MiniProject V0");
+        primaryStage.setTitle("MiniProject V2");
         primaryStage.setScene(scene);
     }
     
