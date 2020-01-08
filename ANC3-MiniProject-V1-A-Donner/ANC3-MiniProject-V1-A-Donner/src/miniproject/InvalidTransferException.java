@@ -9,7 +9,7 @@ package miniproject;
  *
  * @author kuo
  */
-public class InvalidTransferException extends Exception {
+public class InvalidTransferException extends RuntimeException {
     public InvalidTransferException () {
         System.out.println("Error !"); ;
     }

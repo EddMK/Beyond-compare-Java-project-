@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package miniproject;
+package miniproject ;
+
 
 import miniproject.InvalidTransferException;
+import miniproject.MiniProject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

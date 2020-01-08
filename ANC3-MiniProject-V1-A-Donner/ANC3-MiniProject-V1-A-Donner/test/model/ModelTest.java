@@ -1,6 +1,6 @@
 package model;
 
-//import java.lang.NoSuchMethodError;
+
 import miniproject.InvalidTransferException;
 import miniproject.Model;
 import java.util.Arrays;
@@ -9,7 +9,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-//import java.lang.Exception;
+
+
 
 public class ModelTest {
     
@@ -71,7 +72,7 @@ public class ModelTest {
     }
     
     @Test
-    public void testSetDoneSimple() throws InvalidTransferException {
+    public void testSetDoneSimple()  {
         int initSize = model.getToDoList().size();                
         model.setDone(0);
         assertEquals(initSize - 1, model.getToDoList().size());
@@ -81,7 +82,7 @@ public class ModelTest {
     }
     
     @Test
-    public void testSetDoneAll() throws InvalidTransferException {
+    public void testSetDoneAll()  {
         while(!model.getToDoList().isEmpty())
             model.setDone(0);
         assertEquals(TEST_LIST.size(), model.getDoneList().size());
@@ -89,7 +90,7 @@ public class ModelTest {
     }
     
     @Test
-    public void testSetDoneAllSetToDoAll() throws InvalidTransferException {
+    public void testSetDoneAllSetToDoAll() {
         while(!model.getToDoList().isEmpty())
             model.setDone(0);
         while(!model.getDoneList().isEmpty())
@@ -99,28 +100,28 @@ public class ModelTest {
     }
     
     @Test(expected = InvalidTransferException.class)
-    public void testSetDoneInvalidIndex1() throws InvalidTransferException {
+    public void testSetDoneInvalidIndex1()  {
         model.setDone(-1);
     }
     
     @Test(expected = InvalidTransferException.class)
-    public void testSetDoneInvalidIndex2() throws InvalidTransferException {
+    public void testSetDoneInvalidIndex2()  {
         model.setDone(model.getToDoList().size());
     }
     
     @Test(expected = InvalidTransferException.class)
-    public void testSetToDoInvalidIndex1() throws InvalidTransferException {
+    public void testSetToDoInvalidIndex1()  {
         model.setToDo(0);
     }
     
     @Test(expected = InvalidTransferException.class)
-    public void testSetToDoInvalidIndex2() throws InvalidTransferException {
+    public void testSetToDoInvalidIndex2()  {
         model.setDone(0);
         model.setToDo(-1);
     }
     
     @Test(expected = InvalidTransferException.class)
-    public void testSetToDoInvalidIndex3() throws InvalidTransferException {
+    public void testSetToDoInvalidIndex3() {
         model.setDone(0);
         model.setToDo(model.getDoneList().size());
     }
@@ -164,7 +165,7 @@ public class ModelTest {
     }
 
     @Test
-    public void testAddToDoExisting2() throws InvalidTransferException {
+    public void testAddToDoExisting2()  {
         model.setDone(0);
         model.setDone(0);
         List<String> doneList = model.getDoneList();
