@@ -1,13 +1,16 @@
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -21,112 +24,119 @@ import java.util.stream.Stream;
  */
 public class Execution {
     public static void main(String[] args) throws IOException {
-        /*Files.list(Paths.get("TestBC/RootBC_Left/PartialSame/ContentSameFileButOtherFolder"))
-                .forEach(System.out::println);*/
         
-        /*try (Stream<Path> walk = Files.walk(Paths.get("TestBC"))) {
-
-		List<String> result = walk.filter(Files::isDirectory)
-				.map(x -> x.toString()).collect(Collectors.toList());
-
-		result.forEach(System.out::println);
-
-	} catch (IOException e) {
-		e.printStackTrace();
-	}*/
-     /*   
-        File f = null;
-        String[] paths;
-            
-      try {    
       
-         // create new file
-         f = new File("TestBC/RootBC_Left");
-                                 
-         // array of files and directory
-         paths = f.list();
-            
-         // for each name in the path array
-         for(String path:paths) {
-         
-            // prints filename and directory name
-            System.out.println(path);
-         }
-         
-      } catch(Exception e) {
-         // if any error occurs
-         e.printStackTrace();
-      }*/
-      /*
-      File repertoire = new File("TestBC/RootBC_Left");
-      Fichier racine = new Dossier("Racine");
-      listeRepertoire(repertoire);*/
+        Path base1 = Paths.get("TestBC/RootBC_Left");
+        Path base2 = Paths.get("TestBC/RootBC_Right");
+        
+        
+        Fichier Left = new Dossier("TestBC/RootBC_Left", 'D',base1,true);
+        recursif(base1,Left, base2);
+        
+        Fichier Right = new Dossier("TestBC/RootBC_Right", 'D',base2,true);
+        recursif(base2,Right, base1);
+        
+        System.out.println(Left);
+        System.out.println(Right); 
       
-      Path base = Paths.get("TestBC/RootBC_Left");
-      Fichier racine = new Dossier("Racine", 'D',base);
-      recursif(base,racine);
-      System.out.println(racine);
     }
     
-    public static void recursif(Path racine, Fichier source){
+    public static void recursif(Path racine, Fichier source,Path compare) throws IOException{
+        List<Fichier> fichiers;
+        fichiers = new ArrayList<>();
+        Path with = compare;
         File file = new File(racine.toString());
         File[] files = file.listFiles();
         for(int i = 0; i<files.length; i ++){
             if(files[i].isDirectory()){
-                Fichier x = new Dossier(files[i].getName(), 'D',files[i].toPath());
-                recursif(files[i].toPath(),x);               
+                Fichier x = new Dossier(files[i].getName(), 'D',files[i].toPath(),false);
+                fichiers.add(x);
+                recursif(files[i].toPath(),x,with);               
                 source.ajoutFichier(x);               
             }else{
-                source.ajoutFichier(new FichierSimple(files[i].getName(), 'F', files[i].toPath(),(int) files[i].length()));
+                
+                Path path = files[i].toPath();
+                Path aCompare = compare.resolve(path.subpath(2,path.getNameCount() ));
+                File fileCompare = new File(aCompare.toString());
+                String etat ="";
+                if( existFile(path,compare) && fileCompare.isFile() ){
+                    int comparaison = lastModificationTime(path).compareTo(lastModificationTime(aCompare));
+                    if(comparaison == 1){
+                        etat ="NEWER";
+                    }else if(comparaison == 0){
+                        etat ="SAME";
+                    }else{
+                        etat ="OLDER";
+                    }
+                }else{
+                    etat ="ORPHAN";
+                }                             
+                Fichier x = new FichierSimple(files[i].getName(), 'F', files[i].toPath(),(int) files[i].length(),etat);
+                source.ajoutFichier(new FichierSimple(files[i].getName(), 'F', files[i].toPath(),(int) files[i].length(),etat));
+                fichiers.add(x);
+            }              
+        }
+        
+        int orphan = 0;
+        int same = 0;
+        int newer = 0;
+        int older = 0;
+        
+        for(int i = 0; i< fichiers.size();i++){
+            if(fichiers.get(i).etat() == "ORPHAN"){
+                orphan ++;
+            }else if(fichiers.get(i).etat() == "SAME"){
+                same ++;
+            }else if(fichiers.get(i).etat() == "NEWER"){
+                newer ++;
+            }else if(fichiers.get(i).etat() == "OLDER"){
+                older ++;
             }
         }
-    }
+        
+        
+        String etat = "";
+        //ici on compare pr les états 
+        
+        int nombrefichiers = fichiers.size();
+        
+        if(orphan == nombrefichiers){
+            etat = "ORPHAN";
+        }else if(same == nombrefichiers){
+            etat = "SAME";
+        }else if(nombrefichiers-newer == same){
+            etat = "NEWER";
+        }else if(nombrefichiers-older == same){
+            etat = "OLDER";
+        }else{
+            etat = "PARTIAL_SAME";
+        }
+        
+        source.setEtat(etat);
+        
+    } 
     
-    
-    
-    
-    
-    public static void listeRepertoire ( File repertoire ) {
-        //String nom = repertoire.getName();
-        System.out.println ( repertoire.getName());
-        //Fichier racine = new Dossier(nom);
- 
-        if ( repertoire.isDirectory ( ) ) {
-                File[] list = repertoire.listFiles();
-                if (list != null){
-	                for ( int i = 0; i < list.length; i++) {
-	                        // Appel récursif sur les sous-répertoires
-	                        
-                                listeRepertoire(list[i]);
-                                //Fichier f = new Dossier(list[i].getName());
-                                //racine.ajoutFichier(f);
-                                
-	                } 
-                } else {
-                	System.err.println(repertoire + " : Erreur de lecture.");
-                }
-        } 
-        //System.out.println(racine);
-    }
-    
-    
-    public static void listeRepertoire(File path, List<String> allFiles) {
- 
-	if (path.isDirectory()) {
-	    File[] list = path.listFiles();
-	    if (list != null) {
-		for (int i = 0; i < list.length; i++) {
-		    // Appel récursif sur les sous-répertoires
-		    listeRepertoire(list[i], allFiles);
-		}
-	    } else {
-		System.err.println(path + " : Erreur de lecture.");
-	    }
-	} else {
-	    String currentFilePath = path.getAbsolutePath();
-	    System.out.println(currentFilePath);
-	    allFiles.add(currentFilePath);
-	}
+    public static  boolean existFile(Path chemin,Path compare){
+        Path parti = chemin.subpath(2,chemin.getNameCount() );
+        Path aCompare = compare.resolve(parti);
+        File comparateur = new File(aCompare.toString());
+        return comparateur.exists();
     }
 
+    static LocalDateTime lastModificationTime(Path path) throws IOException {
+        BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
+        LocalDateTime result = attrs.lastModifiedTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        if (Files.isDirectory(path)) {
+            try (DirectoryStream<Path> dir = Files.newDirectoryStream(path)) {
+                for (Path p : dir) {
+                    LocalDateTime tmp = lastModificationTime(p);
+                    if (tmp.isAfter(result)) {
+                        result = tmp;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    
 }

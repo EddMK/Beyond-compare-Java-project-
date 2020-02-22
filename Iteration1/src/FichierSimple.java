@@ -17,10 +17,17 @@ import java.util.logging.Logger;
  */
 public class FichierSimple extends Fichier {
     private final int taille;
+    private  String etat;
 
-    public FichierSimple(String nom, char type, Path path,int taille) {
+    public FichierSimple(String nom, char type, Path path,int taille, String etat) {
         super(nom,type, path);
         this.taille = taille;
+        this.etat=etat;
+    }
+    
+    @Override
+    public void setEtat(String newEtat){
+        etat=newEtat;
     }
 
     @Override
@@ -29,12 +36,17 @@ public class FichierSimple extends Fichier {
     }
     
     @Override
+    public String etat() {
+        return etat;
+    }
+    
+    @Override
     protected String formatAffichage(int decalage) {       
-        try {       
+        try{       
             return super.formatAffichage(decalage) + nom() +" " +  type()  + "  "+ 
                     lastModificationTime(path()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))+
-                    " "+taille()+"\n";
-        } catch (IOException ex) {
+                    " "+taille()+" "+etat()+"\n";
+        }catch (IOException ex) {
             Logger.getLogger(FichierSimple.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
@@ -44,7 +56,4 @@ public class FichierSimple extends Fichier {
     public void ajoutFichier(Fichier f) {
         throw new UnsupportedOperationException("Not supported."); 
     }
-    
-    
-    //public boolean c
 }

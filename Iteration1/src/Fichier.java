@@ -7,6 +7,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -21,7 +22,7 @@ public abstract class Fichier {
     private final String nom;
     private final char type;
     private final Path path;
-    /*private final String etat;*/
+    private String etat;
     
     public Fichier(String nom, char type, Path path) {
         this.nom = nom;
@@ -29,12 +30,17 @@ public abstract class Fichier {
         this.path = path;
     }
     
+    public void setEtat(String newEtat){
+        etat = newEtat;
+    }
+    
+    public String etat(){
+        return etat;
+    }
+    
     public char type(){ return type; }
     
     public Path path(){ return path; }
-    /*
-    public String etat(){ return etat; }
-    */
     
     public String nom() { return nom; }
     
@@ -62,9 +68,11 @@ public abstract class Fichier {
         return res;
     }
     
-    
-    
-    
+    public int compareTo(Fichier f){
+        int res;
+        res = Character.compare(this.type, f.type);
+        return res;
+    }
     
     @Override
     public String toString() {
@@ -73,5 +81,4 @@ public abstract class Fichier {
     
     public abstract int taille();
     public abstract void ajoutFichier(Fichier f);
-    
 }

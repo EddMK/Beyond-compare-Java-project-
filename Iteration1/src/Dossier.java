@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,9 +21,11 @@ import java.util.logging.Logger;
  */
 public class Dossier extends Fichier{
     private final List<Fichier> fichiers = new ArrayList<>();
+    private final boolean tete;
     
-    public Dossier(String nom, char type, Path path) {
+    public Dossier(String nom, char type, Path path, Boolean tete) {
         super(nom,type, path);
+        this.tete=tete;
     }
 
     @Override
@@ -33,24 +37,38 @@ public class Dossier extends Fichier{
     }
     
     @Override
-    protected String formatAffichage(int decalage) {
+    protected String formatAffichage(int decalage) {       
         StringBuilder res = new StringBuilder();
-        try {
+        if(this.tete == true){
             res.append(super.formatAffichage(decalage))
-                    .append(nom()).append(" ")
-                    .append(type()).append(" ")
-                    .append(lastModificationTime(path()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
-                    .append(" ").append(taille())
-                    /*.append(" - contient : ").*/
-                    .append("\n");
-        } catch (IOException ex) {
-            Logger.getLogger(Dossier.class.getName()).log(Level.SEVERE, null, ex);
+                    .append(nom()).append("\n");
         }
-        for (Fichier f : fichiers) 
+        else{
+            try {
+                res.append(super.formatAffichage(decalage))
+                        .append(nom()).append(" ")
+                        .append(type()).append(" ")
+                        .append(lastModificationTime(path()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
+                        .append(" ").append(taille())
+                        .append(" ").append(etat())
+                        //.append(" - contient : ").
+                        .append("\n");
+            } catch (IOException ex) {
+                Logger.getLogger(Dossier.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        Collections.sort(fichiers,new Comparator<Fichier>(){ 
+            @Override
+            public int compare(Fichier f1, Fichier f2){
+                return Character.compare(f1.type(), f2.type());
+            }   
+        });
+        for (Fichier f : fichiers){             
             res.append(f.formatAffichage(decalage + 1));
+        }
         return res.toString();
     }
-
+    
     @Override
     public void ajoutFichier(Fichier f) {
         fichiers.add(f);
