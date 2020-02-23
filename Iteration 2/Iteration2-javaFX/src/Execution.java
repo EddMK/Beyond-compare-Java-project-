@@ -24,7 +24,8 @@ import java.util.List;
  */
 public class Execution {
     public static void main(String[] args) throws IOException {
-        
+        //Scanner scan = new Scanner(System.in);
+        //System.out.println("Entrez");
       
         Path base1 = Paths.get("TestBC/RootBC_Left");
         Path base2 = Paths.get("TestBC/RootBC_Right");
@@ -54,22 +55,28 @@ public class Execution {
                 recursif(files[i].toPath(),x,with);               
                 source.ajoutFichier(x);               
             }else{
-                
+                //existFile(files[i].toPath(),compare);
+                /*le chemin du files[i],le chemin du compare,
+                Path path = files[i].toPath();
+                Path parti = path.subpath(2,path.getNameCount() );
+                //System.out.println((path.subpath(2,path.getNameCount() )).toString());
+                Path aCompare = compare.resolve(parti);
+                File comparateur = new File(aCompare.toString());*/
                 Path path = files[i].toPath();
                 Path aCompare = compare.resolve(path.subpath(2,path.getNameCount() ));
                 File fileCompare = new File(aCompare.toString());
-                String etat ="";
+                Etat etat;
                 if( existFile(path,compare) && fileCompare.isFile() ){
                     int comparaison = lastModificationTime(path).compareTo(lastModificationTime(aCompare));
                     if(comparaison == 1){
-                        etat ="NEWER";
+                        etat =Etat.NEWER;
                     }else if(comparaison == 0){
-                        etat ="SAME";
+                        etat =Etat.SAME;
                     }else{
-                        etat ="OLDER";
+                        etat =Etat.OLDER;
                     }
                 }else{
-                    etat ="ORPHAN";
+                    etat =Etat.ORPHAN;
                 }                             
                 Fichier x = new FichierSimple(files[i].getName(), 'F', files[i].toPath(),(int) files[i].length(),etat);
                 source.ajoutFichier(new FichierSimple(files[i].getName(), 'F', files[i].toPath(),(int) files[i].length(),etat));
@@ -83,33 +90,33 @@ public class Execution {
         int older = 0;
         
         for(int i = 0; i< fichiers.size();i++){
-            if(fichiers.get(i).etat() == "ORPHAN"){
+            if(fichiers.get(i).etat() == Etat.ORPHAN){
                 orphan ++;
-            }else if(fichiers.get(i).etat() == "SAME"){
+            }else if(fichiers.get(i).etat() == Etat.SAME){
                 same ++;
-            }else if(fichiers.get(i).etat() == "NEWER"){
+            }else if(fichiers.get(i).etat() == Etat.NEWER){
                 newer ++;
-            }else if(fichiers.get(i).etat() == "OLDER"){
+            }else if(fichiers.get(i).etat() == Etat.OLDER){
                 older ++;
             }
         }
         
         
-        String etat = "";
+        Etat etat;
         //ici on compare pr les états 
         
         int nombrefichiers = fichiers.size();
         
         if(orphan == nombrefichiers){
-            etat = "ORPHAN";
+            etat = Etat.ORPHAN;
         }else if(same == nombrefichiers){
-            etat = "SAME";
+            etat = Etat.SAME;
         }else if(nombrefichiers-newer == same){
-            etat = "NEWER";
+            etat = Etat.NEWER;
         }else if(nombrefichiers-older == same){
-            etat = "OLDER";
+            etat = Etat.OLDER;
         }else{
-            etat = "PARTIAL_SAME";
+            etat = Etat.PARTIAL_SAME;
         }
         
         source.setEtat(etat);

@@ -8,11 +8,6 @@
  *
  * @author kuo
  */
-public class TailleFichierCell extends FichierCell {
-
-    @Override
-    String texte(Fichier elem) {
-        return ""+elem.taille();
-    }
-    
+public enum Etat {
+    ORPHAN,SAME,PARTIAL_SAME,NEWER,OLDER;
 }

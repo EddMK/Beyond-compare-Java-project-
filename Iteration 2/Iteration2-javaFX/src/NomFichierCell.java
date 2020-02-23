@@ -6,11 +6,11 @@
 
 /**
  *
- * @author pseudo
+ * @author kuo
  */
-public class NomFichierCell extends FichierCell {
-
-     @Override
+public class NomFichierCell extends FichierCell{
+    
+    @Override
     String texte(Fichier elem) {
         return elem.nom();
     }

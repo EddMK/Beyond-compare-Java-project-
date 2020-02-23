@@ -40,8 +40,8 @@ public class Dossier extends Fichier{
     protected String formatAffichage(int decalage) {       
         StringBuilder res = new StringBuilder();
         if(this.tete == true){
-            res.append(super.formatAffichage(decalage))
-                    .append(nom()).append("\n");
+            //res.append(super.formatAffichage(decalage))
+                    //.append(nom()).append("\n");
         }
         else{
             try {
@@ -72,5 +72,10 @@ public class Dossier extends Fichier{
     @Override
     public void ajoutFichier(Fichier f) {
         fichiers.add(f);
+    }
+    
+    @Override
+    public Iterable<Fichier> fichiers() {
+        return fichiers;
     }
 }

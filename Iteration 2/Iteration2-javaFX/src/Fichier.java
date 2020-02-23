@@ -6,9 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 
 /*
@@ -25,23 +22,19 @@ public abstract class Fichier {
     private final String nom;
     private final char type;
     private final Path path;
-    private String etat;
-    private final List<Fichier> fichiers = new ArrayList<>();
-    
+    private Etat etat;
     
     public Fichier(String nom, char type, Path path) {
         this.nom = nom;
         this.type = type;
         this.path = path;
     }
-    public List<Fichier> fichiers(){
-        return fichiers;
-    }
-    public void setEtat(String newEtat){
+    
+    public void setEtat(Etat newEtat){
         etat = newEtat;
     }
     
-    public String etat(){
+    public Etat etat(){
         return etat;
     }
     
@@ -64,11 +57,8 @@ public abstract class Fichier {
                 }
             }
         }
-        
-        
         return result;
     }
-    
     
     
     protected String formatAffichage(int decalage) {
@@ -91,4 +81,5 @@ public abstract class Fichier {
     
     public abstract int taille();
     public abstract void ajoutFichier(Fichier f);
+    public abstract Iterable<Fichier> fichiers();
 }

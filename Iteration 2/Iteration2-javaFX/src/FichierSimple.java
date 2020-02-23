@@ -2,8 +2,6 @@
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,17 +17,16 @@ import java.util.logging.Logger;
  */
 public class FichierSimple extends Fichier {
     private final int taille;
-    private  String etat;
-    
+    private  Etat etat;
 
-    public FichierSimple(String nom, char type, Path path,int taille, String etat) {
+    public FichierSimple(String nom, char type, Path path,int taille, Etat etat) {
         super(nom,type, path);
         this.taille = taille;
         this.etat=etat;
     }
     
     @Override
-    public void setEtat(String newEtat){
+    public void setEtat(Etat newEtat){
         etat=newEtat;
     }
 
@@ -39,7 +36,7 @@ public class FichierSimple extends Fichier {
     }
     
     @Override
-    public String etat() {
+    public Etat etat() {
         return etat;
     }
     
@@ -58,5 +55,10 @@ public class FichierSimple extends Fichier {
     @Override
     public void ajoutFichier(Fichier f) {
         throw new UnsupportedOperationException("Not supported."); 
+    }
+    
+    @Override
+    public Iterable<Fichier> fichiers() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

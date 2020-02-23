@@ -6,9 +6,10 @@
 
 /**
  *
- * @author pseudo
+ * @author kuo
  */
 public class TypeFichierCell extends FichierCell {
+
     @Override
     String texte(Fichier elem) {
         return ""+elem.type();
