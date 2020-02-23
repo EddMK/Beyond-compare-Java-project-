@@ -1,0 +1,20 @@
+.ORPHAN {
+    -fx-text-fill: blueviolet;
+}
+
+.SAME {
+    -fx-text-fill: green;
+}
+.NEWER {
+    -fx-text-fill: red;
+}
+
+.OLDER {
+    -fx-text-fill: blue;
+}
+
+.PARTIAL_SAME{
+    -fx-text-fill: yellow;
+}
+
+
