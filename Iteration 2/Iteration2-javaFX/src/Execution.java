@@ -23,7 +23,7 @@ import java.util.List;
  * @author kuo
  */
 public class Execution {
-    public static void main(String[] args) throws IOException {
+    /*public static void main(String[] args) throws IOException {
         //Scanner scan = new Scanner(System.in);
         //System.out.println("Entrez");
       
@@ -40,7 +40,7 @@ public class Execution {
         System.out.println(Left);
         System.out.println(Right); 
       
-    }
+    }*/
     
     public static void recursif(Path racine, Fichier source,Path compare) throws IOException{
         List<Fichier> fichiers;

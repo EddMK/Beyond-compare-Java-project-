@@ -4,20 +4,22 @@
  * and open the template in the editor.
  */
 
+import javafx.geometry.Insets;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javafx.application.Application;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 /**
@@ -27,20 +29,47 @@ import javafx.stage.Stage;
 public class Programme extends Application{
     
     private final VBox root = new VBox();
+    private final VBox tableau1 = new VBox();
+    private final VBox tableau2 = new VBox();
+ 
+    private final HBox boxEtats = new HBox();   
     private final HBox boxTable = new HBox();
-    private final HBox boxColors = new HBox();
     
     @Override
     public void start(Stage primaryStage) throws IOException {
         Path base1 = Paths.get("TestBC/RootBC_Left");
         Path base2 = Paths.get("TestBC/RootBC_Right");
-        
-        
+              
         Fichier Left = new Dossier("TestBC/RootBC_Left", 'D',base1,true);
         Execution.recursif(base1,Left, base2);
         
         Fichier Right = new Dossier("TestBC/RootBC_Right", 'D',base2,true);
         Execution.recursif(base2,Right, base1);
+        
+        String tablePath1 = base1.toAbsolutePath().toString();
+        String tablePath2 = base2.toAbsolutePath().toString();
+        
+        TextFlow flow = new TextFlow();
+
+        Text text1=new Text(tablePath1);
+        text1.setStyle("-fx-font-weight: bold");
+
+        flow.getChildren().addAll(text1);
+        
+        TextFlow flow2 = new TextFlow();
+
+        Text text2 =new Text(tablePath2);
+        text2.setStyle("-fx-font-weight: bold");
+        
+        flow2.getChildren().addAll(text2);
+        
+        HBox path1 = new HBox();
+        path1.getChildren().addAll(flow);
+        path1.setAlignment(Pos.CENTER);
+        
+        HBox path2 = new HBox();
+        path2.getChildren().addAll(flow2);
+        path2.setAlignment(Pos.CENTER);
         
         TreeTableView<Fichier> treeTableView = new TreeTableView<>(makeTreeRoot(Left));
         TreeTableView<Fichier> treeTableView2 = new TreeTableView<>(makeTreeRoot(Right));
@@ -98,43 +127,40 @@ public class Programme extends Application{
         });
         
         treeTableView.getColumns().setAll(nameCol, sizeCol,typeCol,dateCol);
+        treeTableView.setShowRoot(false);
+        treeTableView.setPrefWidth(550);
         treeTableView2.getColumns().setAll(nameCol2, sizeCol2,typeCol2,dateCol2);
+        treeTableView2.setShowRoot(false);
+        treeTableView2.setPrefWidth(550);
         
-        /*
-            VBox bpMenu = new VBox();
-            bpMenu.getChildren().add(tfMenu);
-            bpMenu.getChildren().add(gpButtons);
-
-            BorderPane root = new BorderPane();
-            root.setLeft(btnFood);
-            root.setCenter(bpMenu);
-
-        */
+        Label orphan = new Label(Etat.ORPHAN.name());
+        orphan.setStyle("-fx-text-fill: blueviolet;");
+        Label same = new Label(Etat.SAME.name());
+        same.setStyle("-fx-text-fill: orange;");
+        Label partial = new Label(Etat.PARTIAL_SAME.name());
+        partial.setStyle("-fx-text-fill: green;");
+        Label newer = new Label(Etat.NEWER.name());
+        newer.setStyle("-fx-text-fill: red;");
+        Label older= new Label(Etat.OLDER.name());
+        older.setStyle("-fx-text-fill: black;");
+        boxEtats.getChildren().addAll(orphan,same,partial,newer,older);  
         
-        /*
-        FlowPane root = new FlowPane();
-
-        root.getChildren().add(lName);
-        */
-        
-        
-        BorderPane boxTable = new BorderPane();
-        boxTable.setLeft(treeTableView);
-        boxTable.setCenter(treeTableView2);
-        //root.setLeft(treeTableView);
-        //root.setRight(treeTableView2);
-        //root.getChildren().add(treeTableView);
-
-        /*
-        boxNumbers.setSpacing(10);
-        boxNumbers.setPadding(new Insets(5, 5, 0, 5));
-        boxNumbers.setAlignment(Pos.CENTER);
-        */
+        boxEtats.setSpacing(10);
+        boxEtats.setPadding(new Insets(5, 5, 5, 5));
+        boxEtats.setAlignment(Pos.CENTER);
         
         
+        tableau1.getChildren().addAll(path1, treeTableView);
+        tableau2.getChildren().addAll(path2, treeTableView2);
         
-        root.getChildren().addAll(boxTable, boxColors);
-        Scene scene = new Scene(root, 1000, 450);
+        boxTable.getChildren().addAll(tableau1,tableau2);
+        boxTable.setSpacing(10);
+        boxTable.setPadding(new Insets(5, 5, 0, 5));
+        boxTable.setAlignment(Pos.CENTER);
+        
+        
+        root.getChildren().addAll(boxTable,boxEtats);
+        Scene scene = new Scene(root, 1100, 450);
 
         primaryStage.setTitle("Iteration2");
         primaryStage.setScene(scene);

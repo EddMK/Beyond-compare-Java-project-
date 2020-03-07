@@ -22,12 +22,6 @@ public abstract class FichierCell extends TextFieldTreeTableCell<Fichier, Fichie
             return;
         }
         this.setText(texte(elem));
-        //this.getStyleClass().set(0, elem.type()=='D'? "DOSSIER" : "FICHIER");
-        //this.getStyleClass().set(0, elem.etat()==Etat.ORPHAN ? "ORPHAN":"");
-        /*this.getStyleClass().set(1, elem.etat()==Etat.SAME ? "SAME":"");
-        this.getStyleClass().set(2, elem.etat()==Etat.PARTIAL_SAME ? "PARTIAL_SAME":"");
-        this.getStyleClass().set(3, elem.etat()==Etat.NEWER ? "NEWER":"");
-        this.getStyleClass().set(4, elem.etat()==Etat.OLDER ? "OLDER":"");*/
         
         if(elem.etat()==Etat.ORPHAN ){
             this.getStyleClass().set(0,  "ORPHAN");
