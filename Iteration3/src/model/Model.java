@@ -1,46 +1,67 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package model;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TreeItem;
 
 /**
  *
  * @author kuo
  */
-public class Execution {
-    /*public static void main(String[] args) throws IOException {
-        //Scanner scan = new Scanner(System.in);
-        //System.out.println("Entrez");
-      
-        Path base1 = Paths.get("TestBC/RootBC_Left");
-        Path base2 = Paths.get("TestBC/RootBC_Right");
-        
-        
+public class Model {
+    
+    private final Path base1 = Paths.get("TestBC/RootBC_Left");
+    private final Path base2 = Paths.get("TestBC/RootBC_Right");
+    private ObservableValue<Fichier> Left;
+    private ObservableValue<Fichier> Right;
+    private final ObservableList<TreeItem<Fichier>> treeLeft = FXCollections.observableArrayList();
+    
+    public Model() throws IOException{  
+        Left = new SimpleObjectProperty<>(getLeft());
+        Right = new SimpleObjectProperty<>(getRight());
+    }
+    
+    public ObservableValue<Fichier> getGauche() throws IOException{
+        Left = new SimpleObjectProperty<>(getLeft());
+        return Left;
+    }
+    
+    public ObservableValue<Fichier> getDroite() throws IOException{
+        Right = new SimpleObjectProperty<>(getRight());
+        return Right;
+    }
+    
+    
+    public Fichier getLeft() throws IOException{
         Fichier Left = new Dossier("TestBC/RootBC_Left", 'D',base1,true);
         recursif(base1,Left, base2);
-        
+        return Left;
+    }
+    
+    public Fichier getRight() throws IOException{
         Fichier Right = new Dossier("TestBC/RootBC_Right", 'D',base2,true);
         recursif(base2,Right, base1);
-        
-        System.out.println(Left);
-        System.out.println(Right); 
-      
-    }*/
-    
+        return Right;
+    }
+       
     public static void recursif(Path racine, Fichier source,Path compare) throws IOException{
         List<Fichier> fichiers;
         fichiers = new ArrayList<>();
@@ -138,4 +159,21 @@ public class Execution {
         return result;
     }
     
+    public TreeItem<Fichier> makeTreeRoot(Fichier root) {
+        
+        TreeItem<Fichier> res = new TreeItem<>(root);
+        res.setExpanded(true);
+        if (root.type()=='D') {
+            root.fichiers().forEach(se -> {
+                res.getChildren().add(makeTreeRoot(se));
+            });
+        }
+        
+        return res;
+    }
+    /*
+    public ObservableList<TreeItem<Fichier>> getTreeItems() {
+        TreeItem<Fichier> item = new TreeItem<>(Left);
+        return FXCollections.unmodifiableObservableList(item.getChildren());
+    }*/
 }
