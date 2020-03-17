@@ -1,24 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
+import java.io.File;
 import java.io.IOException;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import model.Etat;
 import model.Fichier;
@@ -34,8 +34,22 @@ public class View extends VBox{
     private final ViewModel viewModel;
     private final VBox tableau1 = new VBox();
     private final VBox tableau2 = new VBox();
-    private final HBox boxEtats = new HBox();   
+    private final HBox boxEtats = new HBox();
+    private final HBox boxFolderPath1 = new HBox();
+    private final HBox boxFolderPath2 = new HBox();
     private final HBox boxTable = new HBox();
+    private final HBox boxBouton = new HBox();
+    private final Button all= new Button("All");
+    private final Button newerLeft= new Button("NewerLeft");
+    private final Button newerRight= new Button("NewerRight");
+    private final Button orphanb= new Button("Orphan");
+    private final Button sameb= new Button("Same");
+    private final Button folder= new Button("Folder");
+    Image imageOk = new Image(getClass().getResourceAsStream("folder-icon.png"));
+    private final Button button = new Button("", new ImageView(imageOk));
+    private final DirectoryChooser directoryChooser = new DirectoryChooser();
+    private final DirectoryChooser directoryChooser2 = new DirectoryChooser();
+    private final Button button2 = new Button("", new ImageView(imageOk));
 
 
     public View(Stage primaryStage, ViewModel viewModel) throws IOException {
@@ -125,6 +139,21 @@ public class View extends VBox{
         treeTableView2.getColumns().setAll(nameCol2, sizeCol2,typeCol2,dateCol2);
         treeTableView2.setShowRoot(false);
         treeTableView2.setPrefWidth(550);
+        button.setOnAction(e -> {
+            File selectedDirectory = directoryChooser.showDialog(primaryStage);
+
+
+        });
+        directoryChooser2.setInitialDirectory(new File("src"));
+
+
+        button2.setOnAction(e -> {
+            File selectedDirectory = directoryChooser2.showDialog(primaryStage);
+            String p = selectedDirectory.getAbsolutePath();
+
+
+        });
+        
         
         Label orphan = new Label(Etat.ORPHAN.name());
         orphan.setStyle("-fx-text-fill: blueviolet;");
@@ -141,10 +170,21 @@ public class View extends VBox{
         boxEtats.setSpacing(10);
         boxEtats.setPadding(new Insets(5, 5, 5, 5));
         boxEtats.setAlignment(Pos.CENTER);
+        boxBouton.getChildren().addAll(all,newerLeft,newerRight,orphanb,sameb,folder);
+        boxBouton.setSpacing(10);
+        boxBouton.setPadding(new Insets(5, 5, 0, 5));
+        boxBouton.setAlignment(Pos.CENTER);
+        
+        boxFolderPath1.getChildren().addAll(path1,button);
+        boxFolderPath1.setSpacing(10);
+        
+        boxFolderPath2.getChildren().addAll(path2,button2);
+        boxFolderPath2.setSpacing(10);
         
         
-        tableau1.getChildren().addAll(path1, treeTableView);
-        tableau2.getChildren().addAll(path2, treeTableView2);
+        
+        tableau1.getChildren().addAll(boxFolderPath1, treeTableView);
+        tableau2.getChildren().addAll(boxFolderPath2, treeTableView2);
         
         boxTable.getChildren().addAll(tableau1,tableau2);
         boxTable.setSpacing(10);
@@ -152,117 +192,18 @@ public class View extends VBox{
         boxTable.setAlignment(Pos.CENTER);
         
         
-        root.getChildren().addAll(boxTable,boxEtats);
+        root.getChildren().addAll(boxBouton,boxTable,boxEtats);
         
         
         
         
         //configBindings();
-        getChildren().addAll(boxTable,boxEtats);
+        getChildren().addAll(boxBouton,boxTable,boxEtats);
         Scene scene = new Scene(this, 1100, 450);
         primaryStage.setTitle("Gestion de texte - MVVM");
         primaryStage.setScene(scene);
     }
-    /*
-    public void configBindings(){
-        treeTableView.rootProperty().bind(viewModel.linesProperty());
-        
-    }*/
-
-  /* 
-    public TreeTableView table(){
-        treeTableView = new TreeTableView<>(makeTreeRoot(viewModel.getFichierGauche().getValue()));
-        //TreeTableView<Fichier> treeTableView2 = new TreeTableView<>();
-        
-        TreeTableColumn<Fichier, Fichier> 
-                nameCol = new TreeTableColumn<>("Nom"),
-                sizeCol = new TreeTableColumn<>("Taille"),
-                typeCol = new TreeTableColumn<>("Type"),
-                dateCol = new TreeTableColumn<>("Date Modif");
-        
-        nameCol.setCellValueFactory(r -> new SimpleObjectProperty<>(r.getValue().getValue()));
-        sizeCol.setCellValueFactory(r -> new SimpleObjectProperty<>(r.getValue().getValue()));
-        typeCol.setCellValueFactory(r -> new SimpleObjectProperty<>(r.getValue().getValue()));
-        dateCol.setCellValueFactory(r -> new SimpleObjectProperty<>(r.getValue().getValue()));
-        
-        nameCol.setPrefWidth(250);
-        
-        nameCol.setCellFactory((param) -> {
-            return new NomFichierCell();
-        });
-        sizeCol.setCellFactory((param) -> {
-            return new TailleFichierCell();
-        });
-        typeCol.setCellFactory((param) -> {
-            return new TypeFichierCell();
-        });
-        dateCol.setCellFactory((param) -> {
-            return new DateModifFichierCell();
-        });
-        
-        TreeTableColumn<Fichier, Fichier> 
-                nameCol2 = new TreeTableColumn<>("Nom"),
-                sizeCol2 = new TreeTableColumn<>("Taille"),
-                typeCol2 = new TreeTableColumn<>("Type"),
-                dateCol2 = new TreeTableColumn<>("Date Modif");
-        
-        nameCol2.setCellValueFactory(r -> new SimpleObjectProperty<>(r.getValue().getValue()));
-        sizeCol2.setCellValueFactory(r -> new SimpleObjectProperty<>(r.getValue().getValue()));
-        typeCol2.setCellValueFactory(r -> new SimpleObjectProperty<>(r.getValue().getValue()));
-        dateCol2.setCellValueFactory(r -> new SimpleObjectProperty<>(r.getValue().getValue()));
-        
-        nameCol2.setPrefWidth(250);
-        
-        nameCol2.setCellFactory((param) -> {
-            return new NomFichierCell();
-        });
-        sizeCol2.setCellFactory((param) -> {
-            return new TailleFichierCell();
-        });
-        typeCol2.setCellFactory((param) -> {
-            return new TypeFichierCell();
-        });
-        dateCol2.setCellFactory((param) -> {
-            return new DateModifFichierCell();
-        });
-        
-        treeTableView.getColumns().setAll(nameCol, sizeCol,typeCol,dateCol);
-        treeTableView.setShowRoot(false);
-        treeTableView.setPrefWidth(550);
-        //treeTableView2.getColumns().setAll(nameCol2, sizeCol2,typeCol2,dateCol2);
-        //treeTableView2.setShowRoot(false);
-        //treeTableView2.setPrefWidth(550);
-        
-        return treeTableView;
-    }
-*/   
-  /*  
-    public void tableaux(){
-        boxTable.getChildren().addAll(tableau1,tableau2);
-        boxTable.setSpacing(10);
-        boxTable.setPadding(new Insets(5, 5, 0, 5));
-        boxTable.setAlignment(Pos.CENTER);
-    }
- */   
-    /*
-    public void etats(){
-        Label orphan = new Label(Etat.ORPHAN.name());
-        orphan.setStyle("-fx-text-fill: blueviolet;");
-        Label same = new Label(Etat.SAME.name());
-        same.setStyle("-fx-text-fill: orange;");
-        Label partial = new Label(Etat.PARTIAL_SAME.name());
-        partial.setStyle("-fx-text-fill: green;");
-        Label newer = new Label(Etat.NEWER.name());
-        newer.setStyle("-fx-text-fill: red;");
-        Label older= new Label(Etat.OLDER.name());
-        older.setStyle("-fx-text-fill: black;");
-        boxEtats.getChildren().addAll(orphan,same,partial,newer,older);  
-        
-        boxEtats.setSpacing(10);
-        boxEtats.setPadding(new Insets(5, 5, 5, 5));
-        boxEtats.setAlignment(Pos.CENTER);
-    }
- */   
+    
     public static TreeItem<Fichier> makeTreeRoot(Fichier root) {
         
         TreeItem<Fichier> res = new TreeItem<>(root);
