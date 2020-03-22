@@ -16,50 +16,79 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TreeItem;
+import javafx.beans.property.SimpleStringProperty;
 
 /**
  *
  * @author kuo
  */
 public class Model {
-    
-    private final Path base1 = Paths.get("TestBC/RootBC_Left");
-    private final Path base2 = Paths.get("TestBC/RootBC_Right");
-    private ObservableValue<Fichier> Left;
+      
+    private final ObservableStringValue stringPathLeft = new SimpleStringProperty("TestBC/RootBC_Left");
+    private final ObservableStringValue stringPathRight = new SimpleStringProperty("TestBC/RootBC_Right");
+    private Path base1 = Paths.get(stringPathLeft.getValue());
+    private Path base2 = Paths.get(stringPathRight.getValue());
+    private ObservableValue<Fichier> Left ;
     private ObservableValue<Fichier> Right;
+    private Fichier Gauche = new Dossier("TestBC/RootBC_Left", 'D',base1,true);
+    private Fichier Droite = new Dossier("TestBC/RootBC_Right", 'D',base2,true);
     private final ObservableList<TreeItem<Fichier>> treeLeft = FXCollections.observableArrayList();
     
     public Model() throws IOException{  
-        Left = new SimpleObjectProperty<>(getLeft());
-        Right = new SimpleObjectProperty<>(getRight());
+        /*Left = new SimpleObjectProperty<>(getLeft());
+        Right = new SimpleObjectProperty<>(getRight());*/
+        init();
     }
     
-    public ObservableValue<Fichier> getGauche() throws IOException{
-        Left = new SimpleObjectProperty<>(getLeft());
-        return Left;
+    public void init() throws IOException{
+        recursif(base1,Gauche, base2);
+        recursif(base2,Droite, base1);
     }
     
-    public ObservableValue<Fichier> getDroite() throws IOException{
-        Right = new SimpleObjectProperty<>(getRight());
-        return Right;
+    public ObservableStringValue getStringPathGauche(){        
+        return stringPathLeft;
     }
     
+    public ObservableStringValue getStringPathDroite(){
+        return stringPathRight;
+    }
+    
+    public String getPathLeft(){
+        return Gauche.path().toAbsolutePath().toString();
+    }
+    
+    public String getPathRight(){
+        return Droite.path().toAbsolutePath().toString();
+    }
     
     public Fichier getLeft() throws IOException{
-        Fichier Left = new Dossier("TestBC/RootBC_Left", 'D',base1,true);
-        recursif(base1,Left, base2);
-        return Left;
+        return Gauche;
     }
     
     public Fichier getRight() throws IOException{
-        Fichier Right = new Dossier("TestBC/RootBC_Right", 'D',base2,true);
-        recursif(base2,Right, base1);
-        return Right;
+        return Droite;
+    }
+    
+    public void delete(){
+        Gauche = null;
+        Droite = null;
+    }
+    
+    public void setFichierGauche(String pathGauche) throws IOException{
+        base1 = Paths.get(pathGauche);
+        Gauche = new Dossier(pathGauche,'D',base1,true);
+        recursif(base1,Gauche, base2);
+    }
+    
+    public void setFichierDroite(String pathDroite) throws IOException{
+        base2 = Paths.get(pathDroite);
+        Droite = new Dossier(pathDroite,'D',base1,true);
+        recursif(base2,Droite, base1);
     }
        
     public static void recursif(Path racine, Fichier source,Path compare) throws IOException{
@@ -158,22 +187,11 @@ public class Model {
         }
         return result;
     }
-    
-    public TreeItem<Fichier> makeTreeRoot(Fichier root) {
-        
-        TreeItem<Fichier> res = new TreeItem<>(root);
-        res.setExpanded(true);
-        if (root.type()=='D') {
-            root.fichiers().forEach(se -> {
-                res.getChildren().add(makeTreeRoot(se));
-            });
-        }
-        
-        return res;
-    }
     /*
-    public ObservableList<TreeItem<Fichier>> getTreeItems() {
-        TreeItem<Fichier> item = new TreeItem<>(Left);
-        return FXCollections.unmodifiableObservableList(item.getChildren());
+    public static void main(String[] args) throws IOException {
+        Model model= new Model();
+        System.out.println(model.getLeft());
+        model.setFichierGauche("C:/Users/kuo/Desktop");
+        System.out.println(model.getLeft());
     }*/
 }

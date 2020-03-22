@@ -2,13 +2,17 @@ package view;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
@@ -50,23 +54,28 @@ public class View extends VBox{
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final DirectoryChooser directoryChooser2 = new DirectoryChooser();
     private final Button button2 = new Button("", new ImageView(imageOk));
+    private final Text text1 = new Text();
+    private final Text text2 = new Text();
+    private final TreeTableView<Fichier> treeTableView;
+    private final TreeTableView<Fichier> treeTableView2;
 
-
+    private StringProperty pathLeft = new SimpleStringProperty();
+    private StringProperty pathRight = new SimpleStringProperty();
+    
+    private final ObjectProperty<Fichier> FichierGauche = new SimpleObjectProperty();
+    private final ObjectProperty<Fichier> FichierDroite = new SimpleObjectProperty();
+    
     public View(Stage primaryStage, ViewModel viewModel) throws IOException {
         this.viewModel = viewModel;
+        configDataBindings();
+        configViewModelBindings();
         
         TextFlow flow = new TextFlow();
-
-        Text text1=new Text(viewModel.getFichierGauche().getValue().path().toAbsolutePath().toString());
         text1.setStyle("-fx-font-weight: bold");
-
         flow.getChildren().addAll(text1);
         
         TextFlow flow2 = new TextFlow();
-
-        Text text2 =new Text(viewModel.getFichierDroite().getValue().path().toAbsolutePath().toString());
-        text2.setStyle("-fx-font-weight: bold");
-        
+        text2.setStyle("-fx-font-weight: bold");    
         flow2.getChildren().addAll(text2);
         
         HBox path1 = new HBox();
@@ -78,8 +87,8 @@ public class View extends VBox{
         path2.setAlignment(Pos.CENTER);
         
         
-        TreeTableView<Fichier> treeTableView = new TreeTableView<>(makeTreeRoot(viewModel.getFichierGauche().getValue()));
-        TreeTableView<Fichier> treeTableView2 = new TreeTableView<>(makeTreeRoot(viewModel.getFichierDroite().getValue()));
+        treeTableView = new TreeTableView<>(makeTreeRoot(FichierGauche.get()));
+        treeTableView2 = new TreeTableView<>(makeTreeRoot(FichierDroite.get()));
         
         TreeTableColumn<Fichier, Fichier> 
                 nameCol = new TreeTableColumn<>("Nom"),
@@ -139,19 +148,24 @@ public class View extends VBox{
         treeTableView2.getColumns().setAll(nameCol2, sizeCol2,typeCol2,dateCol2);
         treeTableView2.setShowRoot(false);
         treeTableView2.setPrefWidth(550);
+        
         button.setOnAction(e -> {
             File selectedDirectory = directoryChooser.showDialog(primaryStage);
-
-
+            if(selectedDirectory != null){
+                text1.setText(selectedDirectory.getAbsolutePath());
+                text1.textProperty().addListener((o, old, newV) -> {           
+                        text1.textProperty().set(selectedDirectory.getAbsolutePath());
+                });
+            }
         });
-        directoryChooser2.setInitialDirectory(new File("src"));
-
-
         button2.setOnAction(e -> {
             File selectedDirectory = directoryChooser2.showDialog(primaryStage);
-            String p = selectedDirectory.getAbsolutePath();
-
-
+            if(selectedDirectory != null){
+                text2.setText(selectedDirectory.getAbsolutePath());
+                text2.textProperty().addListener((o, old, newV) -> {           
+                        text2.textProperty().set(selectedDirectory.getAbsolutePath());
+                });
+            }
         });
         
         
@@ -215,6 +229,18 @@ public class View extends VBox{
         }
         
         return res;
+    }
+    
+    public void configDataBindings() throws IOException{
+        FichierGauche.bind(viewModel.fichierGaucheProperty());
+        FichierDroite.bind(viewModel.fichierDroiteProperty());
+        text1.textProperty().bindBidirectional(viewModel.pathGaucheProperty());
+        text2.textProperty().bindBidirectional(viewModel.pathDroiteProperty());
+    }
+    
+    public void configViewModelBindings() throws IOException{
+        viewModel.pathGaucheSelectedProperty().bindBidirectional(text1.textProperty());
+        viewModel.pathDroiteSelectedProperty().bindBidirectional(text2.textProperty());
     }
     
 }
