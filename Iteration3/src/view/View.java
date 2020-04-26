@@ -56,14 +56,11 @@ public class View extends VBox{
     private final Button button2 = new Button("", new ImageView(imageOk));
     private final Text text1 = new Text();
     private final Text text2 = new Text();
-    private final TreeTableView<Fichier> treeTableView;
+    private final TreeTableView<Fichier> treeTableView ;
     private final TreeTableView<Fichier> treeTableView2;
-
-    private StringProperty pathLeft = new SimpleStringProperty();
-    private StringProperty pathRight = new SimpleStringProperty();
     
-    private final ObjectProperty<Fichier> FichierGauche = new SimpleObjectProperty();
-    private final ObjectProperty<Fichier> FichierDroite = new SimpleObjectProperty();
+    private final ObjectProperty<TreeItem<Fichier>> FichierGauche = new SimpleObjectProperty();
+    private final ObjectProperty<TreeItem<Fichier>> FichierDroite = new SimpleObjectProperty();
     
     public View(Stage primaryStage, ViewModel viewModel) throws IOException {
         this.viewModel = viewModel;
@@ -87,8 +84,8 @@ public class View extends VBox{
         path2.setAlignment(Pos.CENTER);
         
         
-        treeTableView = new TreeTableView<>(makeTreeRoot(FichierGauche.get()));
-        treeTableView2 = new TreeTableView<>(makeTreeRoot(FichierDroite.get()));
+        treeTableView = new TreeTableView<>();
+        treeTableView2 = new TreeTableView<>();
         
         TreeTableColumn<Fichier, Fichier> 
                 nameCol = new TreeTableColumn<>("Nom"),
@@ -152,19 +149,15 @@ public class View extends VBox{
         button.setOnAction(e -> {
             File selectedDirectory = directoryChooser.showDialog(primaryStage);
             if(selectedDirectory != null){
-                text1.setText(selectedDirectory.getAbsolutePath());
-                text1.textProperty().addListener((o, old, newV) -> {           
-                        text1.textProperty().set(selectedDirectory.getAbsolutePath());
-                });
+                //text1.setText(selectedDirectory.getAbsolutePath());
+                text1.textProperty().setValue(selectedDirectory.getAbsolutePath());
             }
         });
         button2.setOnAction(e -> {
             File selectedDirectory = directoryChooser2.showDialog(primaryStage);
             if(selectedDirectory != null){
-                text2.setText(selectedDirectory.getAbsolutePath());
-                text2.textProperty().addListener((o, old, newV) -> {           
-                        text2.textProperty().set(selectedDirectory.getAbsolutePath());
-                });
+                //text2.setText(selectedDirectory.getAbsolutePath());
+                text2.textProperty().setValue(selectedDirectory.getAbsolutePath());
             }
         });
         
@@ -219,7 +212,6 @@ public class View extends VBox{
     }
     
     public static TreeItem<Fichier> makeTreeRoot(Fichier root) {
-        
         TreeItem<Fichier> res = new TreeItem<>(root);
         res.setExpanded(true);
         if (root.type()=='D') {
@@ -227,20 +219,21 @@ public class View extends VBox{
                 res.getChildren().add(makeTreeRoot(se));
             });
         }
-        
         return res;
     }
     
     public void configDataBindings() throws IOException{
-        FichierGauche.bind(viewModel.fichierGaucheProperty());
-        FichierDroite.bind(viewModel.fichierDroiteProperty());
-        text1.textProperty().bindBidirectional(viewModel.pathGaucheProperty());
-        text2.textProperty().bindBidirectional(viewModel.pathDroiteProperty());
+        //FichierGauche.bind(viewModel.FichierGaucheProperty());
+        //FichierDroite.bind(viewModel.FichierDroiteProperty());
+        text1.textProperty().bindBidirectional(viewModel.pathLeftProperty());
+        text2.textProperty().bindBidirectional(viewModel.pathRightProperty());
+        treeTableView.rootProperty().bind(viewModel.fichierGaucheProperty());
+        treeTableView2.rootProperty().bind(viewModel.fichierDroiteProperty());       
     }
     
     public void configViewModelBindings() throws IOException{
-        viewModel.pathGaucheSelectedProperty().bindBidirectional(text1.textProperty());
-        viewModel.pathDroiteSelectedProperty().bindBidirectional(text2.textProperty());
+        //viewModel.pathLeftProperty().bindBidirectional(text1.textProperty());
+        //viewModel.pathRightProperty().bindBidirectional(text2.textProperty());
     }
     
 }

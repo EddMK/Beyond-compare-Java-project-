@@ -26,7 +26,7 @@ import javafx.collections.ObservableList;
 public class Dossier extends Fichier{
     //private final List<Fichier> fichiers = new ArrayList<>();
     private final boolean tete;
-    private final ObservableList<Fichier> fichiers = FXCollections.observableArrayList();
+    private final List<Fichier> fichiers = new ArrayList<>();
     
     
     public Dossier(String nom, char type, Path path, Boolean tete) {
@@ -45,11 +45,6 @@ public class Dossier extends Fichier{
     @Override
     protected String formatAffichage(int decalage) {       
         StringBuilder res = new StringBuilder();
-        if(this.tete == true){
-            //res.append(super.formatAffichage(decalage))
-                    //.append(nom()).append("\n");
-        }
-        else{
             try {
                 res.append(super.formatAffichage(decalage))
                         .append(nom()).append(" ")
@@ -62,7 +57,6 @@ public class Dossier extends Fichier{
             } catch (IOException ex) {
                 Logger.getLogger(Dossier.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
         Collections.sort(fichiers,new Comparator<Fichier>(){ 
             @Override
             public int compare(Fichier f1, Fichier f2){
@@ -84,8 +78,5 @@ public class Dossier extends Fichier{
     public Iterable<Fichier> fichiers() {
         return fichiers;
     }
-    
-    public ObservableList<Fichier> getFichiers() {
-        return FXCollections.unmodifiableObservableList(fichiers);
-    }
+
 }
