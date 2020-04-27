@@ -27,15 +27,19 @@ public class test{
         StringProperty pathDroite = new SimpleStringProperty(" bien");
         
         StringProperty sum = new SimpleStringProperty("");
-        pathDroite.addListener((o, old, newValue) -> {
-            System.out.println(old);
-        });
-        sum.bindBidirectional(pathDroite);
         
-        System.out.println(pathDroite.get());
-        System.out.println(pathDroite);
+        pathDroite.addListener((o, old, newValue) -> {
+            System.out.println(o);
+            System.out.println(old);
+            System.out.println(newValue);
+        });
+        
+        
+        //System.out.println(pathDroite.get());
+        //System.out.println(pathDroite);     
+        sum.bindBidirectional(pathDroite);
         sum.setValue("pas");
-        System.out.println(pathDroite.get());   
-        System.out.println(pathDroite);
+        //System.out.println(pathDroite.get());   
+        //System.out.println(pathDroite);
     }
 }

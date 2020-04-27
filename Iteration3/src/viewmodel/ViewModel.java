@@ -26,9 +26,11 @@ public class ViewModel {
     
     private final StringProperty pathGauche = new SimpleStringProperty("TestBC/RootBC_Left");
     private final StringProperty pathDroite = new SimpleStringProperty("TestBC/RootBC_Right");
+    private final ObjectProperty Left = new SimpleObjectProperty();
+    private final ObjectProperty Right = new SimpleObjectProperty();
     private final Model model;
     
-    public ViewModel(Model model){
+    public ViewModel(Model model) throws IOException{
         this.model=model;   
         pathGauche.addListener((o,oldValue,newValue) -> {
             /*try {
@@ -58,11 +60,11 @@ public class ViewModel {
     }
     
     public ObjectProperty<TreeItem<Fichier>> fichierGaucheProperty() throws IOException {
-        return new SimpleObjectProperty(model.getLeft());
+        return new SimpleObjectProperty<>(model.getLeft());
     }
     
     public ObjectProperty<TreeItem<Fichier>> fichierDroiteProperty() throws IOException {
-        return new SimpleObjectProperty(model.getRight());
+        return new SimpleObjectProperty<>(model.getRight());
     }
     
     public static TreeItem<Fichier> makeTreeRoot(Fichier root) {

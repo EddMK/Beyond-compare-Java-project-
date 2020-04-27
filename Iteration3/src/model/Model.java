@@ -34,6 +34,7 @@ public class Model {
     
     private StringProperty pathGauche = new SimpleStringProperty("TestBC/RootBC_Left");
     private StringProperty pathDroite = new SimpleStringProperty("TestBC/RootBC_Right");
+    private ObjectProperty<TreeItem<Fichier>> Left = new SimpleObjectProperty();
     private Path base1 = Paths.get(pathGauche.get()) ;
     private Path base2 = Paths.get(pathDroite.get()) ;
     private Fichier Gauche = new Dossier("TestBC/RootBC_Left", 'D',base1,true);
@@ -56,14 +57,14 @@ public class Model {
         return this.pathDroite;
     }
     
-    public ObjectProperty<TreeItem<Fichier>> getLeft() throws IOException{
+    public TreeItem<Fichier> getLeft() throws IOException{
         TreeItem<Fichier> a = makeTreeRoot(Gauche);
-        return new SimpleObjectProperty(a);
+        return a;
     }
     
-    public ObjectProperty<TreeItem<Fichier>> getRight() throws IOException{
+    public TreeItem<Fichier> getRight() throws IOException{
         TreeItem<Fichier> a = makeTreeRoot(Droite);
-        return new SimpleObjectProperty(a);
+        return a;
     }
     
     public void delete(){

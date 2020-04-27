@@ -56,8 +56,8 @@ public class View extends VBox{
     private final Button button2 = new Button("", new ImageView(imageOk));
     private final Text text1 = new Text();
     private final Text text2 = new Text();
-    private final TreeTableView<Fichier> treeTableView ;
-    private final TreeTableView<Fichier> treeTableView2;
+    private final TreeTableView<Fichier> treeTableView = new TreeTableView<>();
+    private final TreeTableView<Fichier> treeTableView2 = new TreeTableView<>() ;
     
     private final ObjectProperty<TreeItem<Fichier>> FichierGauche = new SimpleObjectProperty();
     private final ObjectProperty<TreeItem<Fichier>> FichierDroite = new SimpleObjectProperty();
@@ -84,8 +84,8 @@ public class View extends VBox{
         path2.setAlignment(Pos.CENTER);
         
         
-        treeTableView = new TreeTableView<>();
-        treeTableView2 = new TreeTableView<>();
+        //treeTableView = new TreeTableView<>();
+        //treeTableView2 = new TreeTableView<>();
         
         TreeTableColumn<Fichier, Fichier> 
                 nameCol = new TreeTableColumn<>("Nom"),
@@ -227,13 +227,14 @@ public class View extends VBox{
         //FichierDroite.bind(viewModel.FichierDroiteProperty());
         text1.textProperty().bindBidirectional(viewModel.pathLeftProperty());
         text2.textProperty().bindBidirectional(viewModel.pathRightProperty());
-        treeTableView.rootProperty().bind(viewModel.fichierGaucheProperty());
-        treeTableView2.rootProperty().bind(viewModel.fichierDroiteProperty());       
+        treeTableView.rootProperty().bindBidirectional(viewModel.fichierGaucheProperty());
+        treeTableView2.rootProperty().bindBidirectional(viewModel.fichierDroiteProperty()); 
     }
     
     public void configViewModelBindings() throws IOException{
         //viewModel.pathLeftProperty().bindBidirectional(text1.textProperty());
         //viewModel.pathRightProperty().bindBidirectional(text2.textProperty());
+
     }
     
 }
