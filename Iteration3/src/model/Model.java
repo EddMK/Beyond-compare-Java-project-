@@ -57,6 +57,14 @@ public class Model {
         return this.pathDroite;
     }
     
+    public Fichier retourneGauche(){
+        return Gauche;
+    }
+    
+    public Fichier retourneDroite(){
+        return Droite;
+    }
+    
     public TreeItem<Fichier> getLeft() throws IOException{
         TreeItem<Fichier> a = makeTreeRoot(Gauche);
         return a;

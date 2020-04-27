@@ -67,6 +67,10 @@ public class View extends VBox{
         configDataBindings();
         configViewModelBindings();
         
+        treeTableView.rootProperty().addListener((o,old,newValue) ->{
+            System.out.println("Bien été changé !");
+        });
+        
         TextFlow flow = new TextFlow();
         text1.setStyle("-fx-font-weight: bold");
         flow.getChildren().addAll(text1);
@@ -210,7 +214,7 @@ public class View extends VBox{
         primaryStage.setTitle("Gestion de texte - MVVM");
         primaryStage.setScene(scene);
     }
-    
+    /*
     public static TreeItem<Fichier> makeTreeRoot(Fichier root) {
         TreeItem<Fichier> res = new TreeItem<>(root);
         res.setExpanded(true);
@@ -220,15 +224,14 @@ public class View extends VBox{
             });
         }
         return res;
-    }
+    }*/
     
     public void configDataBindings() throws IOException{
-        //FichierGauche.bind(viewModel.FichierGaucheProperty());
-        //FichierDroite.bind(viewModel.FichierDroiteProperty());
         text1.textProperty().bindBidirectional(viewModel.pathLeftProperty());
         text2.textProperty().bindBidirectional(viewModel.pathRightProperty());
         treeTableView.rootProperty().bindBidirectional(viewModel.fichierGaucheProperty());
         treeTableView2.rootProperty().bindBidirectional(viewModel.fichierDroiteProperty()); 
+        //System.out.println(viewModel.fichierGaucheProperty());
     }
     
     public void configViewModelBindings() throws IOException{

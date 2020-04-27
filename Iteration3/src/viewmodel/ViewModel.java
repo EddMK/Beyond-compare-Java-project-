@@ -14,7 +14,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TreeItem;
 import model.Fichier;
 import model.Model;
@@ -26,29 +25,33 @@ public class ViewModel {
     
     private final StringProperty pathGauche = new SimpleStringProperty("TestBC/RootBC_Left");
     private final StringProperty pathDroite = new SimpleStringProperty("TestBC/RootBC_Right");
-    private final ObjectProperty Left = new SimpleObjectProperty();
-    private final ObjectProperty Right = new SimpleObjectProperty();
+    private final ObjectProperty<TreeItem<Fichier>> fichierLeft;
+    private final ObjectProperty<TreeItem<Fichier>> fichierRight;
     private final Model model;
     
     public ViewModel(Model model) throws IOException{
         this.model=model;   
         pathGauche.addListener((o,oldValue,newValue) -> {
-            /*try {
-                //model.setFichierGauche(newValue);
-                System.out.println(model.getLeft().toString());
-                System.out.println(FichierGaucheProperty());
+            try {
+                model.setFichierGauche(newValue);
+                fichierGaucheProperty().set(model.getLeft());
+                //System.out.println(model.getLeft().toString());
+                //System.out.println(fichierGaucheProperty());
             } catch (IOException ex) {
                 Logger.getLogger(ViewModel.class.getName()).log(Level.SEVERE, null, ex);
             }
-            */
+            
         });
         pathDroite.addListener((o,oldValue,newValue) -> {
-            /*try {
+            try {
                 model.setFichierDroite(newValue);
+                fichierDroiteProperty().set(model.getRight());
             } catch (IOException ex) {
                 Logger.getLogger(ViewModel.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+            }
         });
+        fichierLeft = new SimpleObjectProperty<>(model.getLeft());
+        fichierRight = new SimpleObjectProperty<>(model.getRight());
     }
     
     public StringProperty pathLeftProperty(){
@@ -60,11 +63,11 @@ public class ViewModel {
     }
     
     public ObjectProperty<TreeItem<Fichier>> fichierGaucheProperty() throws IOException {
-        return new SimpleObjectProperty<>(model.getLeft());
+        return fichierLeft;
     }
     
     public ObjectProperty<TreeItem<Fichier>> fichierDroiteProperty() throws IOException {
-        return new SimpleObjectProperty<>(model.getRight());
+        return fichierRight;
     }
     
     public static TreeItem<Fichier> makeTreeRoot(Fichier root) {
