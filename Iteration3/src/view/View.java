@@ -59,17 +59,12 @@ public class View extends VBox{
     private final TreeTableView<Fichier> treeTableView = new TreeTableView<>();
     private final TreeTableView<Fichier> treeTableView2 = new TreeTableView<>() ;
     
-    private final ObjectProperty<TreeItem<Fichier>> FichierGauche = new SimpleObjectProperty();
-    private final ObjectProperty<TreeItem<Fichier>> FichierDroite = new SimpleObjectProperty();
-    
     public View(Stage primaryStage, ViewModel viewModel) throws IOException {
         this.viewModel = viewModel;
         configDataBindings();
         configViewModelBindings();
         
-        treeTableView.rootProperty().addListener((o,old,newValue) ->{
-            System.out.println("Bien été changé !");
-        });
+        
         
         TextFlow flow = new TextFlow();
         text1.setStyle("-fx-font-weight: bold");
@@ -153,14 +148,12 @@ public class View extends VBox{
         button.setOnAction(e -> {
             File selectedDirectory = directoryChooser.showDialog(primaryStage);
             if(selectedDirectory != null){
-                //text1.setText(selectedDirectory.getAbsolutePath());
                 text1.textProperty().setValue(selectedDirectory.getAbsolutePath());
             }
         });
         button2.setOnAction(e -> {
             File selectedDirectory = directoryChooser2.showDialog(primaryStage);
             if(selectedDirectory != null){
-                //text2.setText(selectedDirectory.getAbsolutePath());
                 text2.textProperty().setValue(selectedDirectory.getAbsolutePath());
             }
         });

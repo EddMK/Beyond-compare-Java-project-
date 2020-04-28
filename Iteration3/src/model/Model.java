@@ -16,12 +16,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableStringValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TreeItem;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -34,17 +28,25 @@ public class Model {
     
     private StringProperty pathGauche = new SimpleStringProperty("TestBC/RootBC_Left");
     private StringProperty pathDroite = new SimpleStringProperty("TestBC/RootBC_Right");
-    private ObjectProperty<TreeItem<Fichier>> Left = new SimpleObjectProperty();
     private Path base1 = Paths.get(pathGauche.get()) ;
     private Path base2 = Paths.get(pathDroite.get()) ;
-    private Fichier Gauche = new Dossier("TestBC/RootBC_Left", 'D',base1,true);
-    private Fichier Droite = new Dossier("TestBC/RootBC_Right", 'D',base2,true);
+    private Fichier Gauche = new Dossier(pathGauche.get(), 'D',base1,true);
+    private Fichier Droite = new Dossier(pathDroite.get(), 'D',base2,true);
 
     public Model() throws IOException{  
         init();
     }
     
     public void init() throws IOException{
+        recursif(base1,Gauche, base2);
+        recursif(base2,Droite, base1);
+    }
+    
+    public void modif(String newPathGauche, String newPathDroite) throws IOException{
+        base1 = Paths.get(newPathGauche);
+        base2 = Paths.get(newPathDroite);
+        Gauche = new Dossier(newPathGauche, 'D',base1,true);
+        Droite = new Dossier(newPathDroite, 'D',base2,true);
         recursif(base1,Gauche, base2);
         recursif(base2,Droite, base1);
     }
@@ -75,22 +77,20 @@ public class Model {
         return a;
     }
     
-    public void delete(){
-        Gauche = null;
-        Droite = null;
-    }
     
     public void setFichierGauche(String newPathGauche) throws IOException{
         pathGauche.set(newPathGauche);
         base1 = Paths.get(pathGauche.get());
         Gauche = new Dossier(pathGauche.get(),'D',base1,true);
+        System.out.println(base2.toString());
         recursif(base1,Gauche, base2);
     }
     
     public void setFichierDroite(String newPathDroite) throws IOException{
         pathDroite.set(newPathDroite);
         base2 = Paths.get(pathDroite.get());
-        Droite = new Dossier(pathDroite.get(),'D',base1,true);
+        Droite = new Dossier(pathDroite.get(),'D',base2,true);
+        System.out.println(base1.toString());
         recursif(base2,Droite, base1);
     }
      

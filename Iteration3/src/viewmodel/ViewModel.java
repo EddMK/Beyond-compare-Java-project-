@@ -33,9 +33,11 @@ public class ViewModel {
         this.model=model;   
         pathGauche.addListener((o,oldValue,newValue) -> {
             try {
-                model.setFichierGauche(newValue);
+                model.modif(newValue,pathDroite.get() );
+                //model.setFichierGauche(newValue);
                 fichierGaucheProperty().set(model.getLeft());
-                //System.out.println(model.getLeft().toString());
+                fichierDroiteProperty().set(model.getRight());
+                //System.out.println(pathDroite.get());
                 //System.out.println(fichierGaucheProperty());
             } catch (IOException ex) {
                 Logger.getLogger(ViewModel.class.getName()).log(Level.SEVERE, null, ex);
@@ -44,14 +46,19 @@ public class ViewModel {
         });
         pathDroite.addListener((o,oldValue,newValue) -> {
             try {
-                model.setFichierDroite(newValue);
+                model.modif(pathGauche.get() ,newValue);
+                fichierGaucheProperty().set(model.getLeft());
                 fichierDroiteProperty().set(model.getRight());
+                //model.setFichierDroite(newValue);
+                //fichierDroiteProperty().set(model.getRight());
+                //System.out.println(pathGauche.get());
             } catch (IOException ex) {
                 Logger.getLogger(ViewModel.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         fichierLeft = new SimpleObjectProperty<>(model.getLeft());
         fichierRight = new SimpleObjectProperty<>(model.getRight());
+        
     }
     
     public StringProperty pathLeftProperty(){
