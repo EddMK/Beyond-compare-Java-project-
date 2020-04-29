@@ -30,15 +30,15 @@ public class ViewModel {
     private final Model model;
     
     public ViewModel(Model model) throws IOException{
-        this.model=model;   
+        this.model=model; 
+        fichierLeft = new SimpleObjectProperty<>(model.getLeft());
+        fichierRight = new SimpleObjectProperty<>(model.getRight());
+        
         pathGauche.addListener((o,oldValue,newValue) -> {
             try {
                 model.modif(newValue,pathDroite.get() );
-                //model.setFichierGauche(newValue);
-                fichierGaucheProperty().set(model.getLeft());
-                fichierDroiteProperty().set(model.getRight());
-                //System.out.println(pathDroite.get());
-                //System.out.println(fichierGaucheProperty());
+                fichierLeft.set(model.getLeft());
+                fichierRight.set(model.getRight());
             } catch (IOException ex) {
                 Logger.getLogger(ViewModel.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -47,18 +47,12 @@ public class ViewModel {
         pathDroite.addListener((o,oldValue,newValue) -> {
             try {
                 model.modif(pathGauche.get() ,newValue);
-                fichierGaucheProperty().set(model.getLeft());
-                fichierDroiteProperty().set(model.getRight());
-                //model.setFichierDroite(newValue);
-                //fichierDroiteProperty().set(model.getRight());
-                //System.out.println(pathGauche.get());
+                fichierLeft.set(model.getLeft());
+                fichierRight.set(model.getRight());
             } catch (IOException ex) {
                 Logger.getLogger(ViewModel.class.getName()).log(Level.SEVERE, null, ex);
             }
-        });
-        fichierLeft = new SimpleObjectProperty<>(model.getLeft());
-        fichierRight = new SimpleObjectProperty<>(model.getRight());
-        
+        });     
     }
     
     public StringProperty pathLeftProperty(){
@@ -77,14 +71,4 @@ public class ViewModel {
         return fichierRight;
     }
     
-    public static TreeItem<Fichier> makeTreeRoot(Fichier root) {
-        TreeItem<Fichier> res = new TreeItem<>(root);
-        res.setExpanded(true);
-        if (root.type()=='D') {
-            root.fichiers().forEach(se -> {
-                res.getChildren().add(makeTreeRoot(se));
-            });
-        }
-        return res;
-    }
 }

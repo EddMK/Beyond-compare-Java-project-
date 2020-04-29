@@ -26,8 +26,8 @@ import javafx.beans.property.StringProperty;
  */
 public class Model {
     
-    private StringProperty pathGauche = new SimpleStringProperty("TestBC/RootBC_Left");
-    private StringProperty pathDroite = new SimpleStringProperty("TestBC/RootBC_Right");
+    private StringProperty pathGauche = new SimpleStringProperty("C:\\Users\\kuo\\Desktop\\anc31920_gr8\\Iteration3\\TestBC\\RootBC_Left");
+    private StringProperty pathDroite = new SimpleStringProperty("C:\\Users\\kuo\\Desktop\\anc31920_gr8\\Iteration3\\TestBC\\RootBC_Right");
     private Path base1 = Paths.get(pathGauche.get()) ;
     private Path base2 = Paths.get(pathDroite.get()) ;
     private Fichier Gauche = new Dossier(pathGauche.get(), 'D',base1,true);
@@ -38,17 +38,24 @@ public class Model {
     }
     
     public void init() throws IOException{
-        recursif(base1,Gauche, base2);
-        recursif(base2,Droite, base1);
+        recursif(base1,Gauche, base2,base1);
+        recursif(base2,Droite, base1,base2);
     }
     
     public void modif(String newPathGauche, String newPathDroite) throws IOException{
+        pathGauche.set(newPathGauche);
+        pathDroite.set(newPathDroite);
         base1 = Paths.get(newPathGauche);
         base2 = Paths.get(newPathDroite);
-        Gauche = new Dossier(newPathGauche, 'D',base1,true);
+        System.out.println(base1 + " " + base2);    
+        
         Droite = new Dossier(newPathDroite, 'D',base2,true);
-        recursif(base1,Gauche, base2);
-        recursif(base2,Droite, base1);
+        recursif(base2,Droite, base1,base2);
+        
+        Gauche = new Dossier(newPathGauche, 'D',base1,true);
+        recursif(base1,Gauche, base2, base1);
+        
+        
     }
     
     public StringProperty pathLeftProperty(){
@@ -77,43 +84,27 @@ public class Model {
         return a;
     }
     
-    
-    public void setFichierGauche(String newPathGauche) throws IOException{
-        pathGauche.set(newPathGauche);
-        base1 = Paths.get(pathGauche.get());
-        Gauche = new Dossier(pathGauche.get(),'D',base1,true);
-        System.out.println(base2.toString());
-        recursif(base1,Gauche, base2);
-    }
-    
-    public void setFichierDroite(String newPathDroite) throws IOException{
-        pathDroite.set(newPathDroite);
-        base2 = Paths.get(pathDroite.get());
-        Droite = new Dossier(pathDroite.get(),'D',base2,true);
-        System.out.println(base1.toString());
-        recursif(base2,Droite, base1);
-    }
-     
-    public static void recursif(Path racine, Fichier source,Path compare) throws IOException{
+    public static void recursif(Path racine, Fichier source,Path compare, Path pathRoot) throws IOException{
         List<Fichier> fichiers;
         fichiers = new ArrayList<>();
         Path with = compare;
+        Path a = pathRoot;
         File file = new File(racine.toString());
         File[] files = file.listFiles();
         for(int i = 0; i<files.length; i ++){
             if(files[i].isDirectory()){
-                Fichier x = new Dossier(files[i].getName(), 'D',files[i].toPath(),false);
+                Fichier x = new Dossier(files[i].getName(), 'D',Paths.get(files[i].getAbsolutePath()),false);
                 fichiers.add(x);
-                recursif(files[i].toPath(),x,with);               
+                recursif(files[i].toPath(),x,with,a);               
                 source.ajoutFichier(x);               
             }else{
                 Path path = files[i].toPath();
-                Path aCompare = compare.resolve(path.subpath(2,path.getNameCount() ));
+                Path aCompare = compare.resolve(a.relativize(path));
                 File fileCompare = new File(aCompare.toString());
-                Etat etat;
-                if( existFile(path,compare) && fileCompare.isFile() ){
+                Etat etat;              
+                if( existFile(aCompare) && fileCompare.isFile() ){
                     int comparaison = lastModificationTime(path).compareTo(lastModificationTime(aCompare));
-                    if(comparaison == 1){
+                    if(comparaison >0){
                         etat =Etat.NEWER;
                     }else if(comparaison == 0){
                         etat =Etat.SAME;
@@ -168,10 +159,8 @@ public class Model {
         
     } 
     
-    public static  boolean existFile(Path chemin,Path compare){
-        Path parti = chemin.subpath(2,chemin.getNameCount() );
-        Path aCompare = compare.resolve(parti);
-        File comparateur = new File(aCompare.toString());
+    public static  boolean existFile(Path chemin){
+        File comparateur = new File(chemin.toString());
         return comparateur.exists();
     }
 

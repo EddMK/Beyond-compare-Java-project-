@@ -2,18 +2,12 @@ package view;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
@@ -207,24 +201,12 @@ public class View extends VBox{
         primaryStage.setTitle("Gestion de texte - MVVM");
         primaryStage.setScene(scene);
     }
-    /*
-    public static TreeItem<Fichier> makeTreeRoot(Fichier root) {
-        TreeItem<Fichier> res = new TreeItem<>(root);
-        res.setExpanded(true);
-        if (root.type()=='D') {
-            root.fichiers().forEach(se -> {
-                res.getChildren().add(makeTreeRoot(se));
-            });
-        }
-        return res;
-    }*/
     
     public void configDataBindings() throws IOException{
         text1.textProperty().bindBidirectional(viewModel.pathLeftProperty());
         text2.textProperty().bindBidirectional(viewModel.pathRightProperty());
         treeTableView.rootProperty().bindBidirectional(viewModel.fichierGaucheProperty());
         treeTableView2.rootProperty().bindBidirectional(viewModel.fichierDroiteProperty()); 
-        //System.out.println(viewModel.fichierGaucheProperty());
     }
     
     public void configViewModelBindings() throws IOException{
