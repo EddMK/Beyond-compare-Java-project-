@@ -26,12 +26,12 @@ import javafx.beans.property.StringProperty;
  */
 public class Model {
     
-    private StringProperty pathGauche = new SimpleStringProperty("C:\\Users\\kuo\\Desktop\\anc31920_gr8\\Iteration3\\TestBC\\RootBC_Left");
-    private StringProperty pathDroite = new SimpleStringProperty("C:\\Users\\kuo\\Desktop\\anc31920_gr8\\Iteration3\\TestBC\\RootBC_Right");
-    private Path base1 = Paths.get(pathGauche.get()) ;
-    private Path base2 = Paths.get(pathDroite.get()) ;
-    private Fichier Gauche = new Dossier(pathGauche.get(), 'D',base1,true);
-    private Fichier Droite = new Dossier(pathDroite.get(), 'D',base2,true);
+    private String pathGauche = "C:\\Users\\nom\\Desktop\\Iteration3-bis\\Iteration3-bis\\TestBC\\RootBC_Left";
+    private String pathDroite = "C:\\Users\\nom\\Desktop\\Iteration3-bis\\Iteration3-bis\\TestBC\\RootBC_Right";
+    private Path base1 = Paths.get(pathGauche) ;
+    private Path base2 = Paths.get(pathDroite) ;
+    private Fichier Gauche = new Dossier(pathGauche, 'D',base1,true);
+    private Fichier Droite = new Dossier(pathDroite, 'D',base2,true);
 
     public Model() throws IOException{  
         init();
@@ -43,8 +43,8 @@ public class Model {
     }
     
     public void modif(String newPathGauche, String newPathDroite) throws IOException{
-        pathGauche.set(newPathGauche);
-        pathDroite.set(newPathDroite);
+        pathGauche =newPathGauche;
+        pathDroite =newPathDroite;
         base1 = Paths.get(newPathGauche);
         base2 = Paths.get(newPathDroite);
         System.out.println(base1 + " " + base2);    
@@ -58,11 +58,11 @@ public class Model {
         
     }
     
-    public StringProperty pathLeftProperty(){
+    public  String pathLeft(){
         return this.pathGauche;
     }
     
-    public StringProperty pathRightProperty(){
+    public String pathRightProperty(){
         return this.pathDroite;
     }
     

@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
+import static javafx.geometry.Orientation.VERTICAL;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
@@ -37,13 +41,17 @@ public class View extends VBox{
     private final HBox boxFolderPath2 = new HBox();
     private final HBox boxTable = new HBox();
     private final HBox boxBouton = new HBox();
-    private final Button all= new Button("All");
-    private final Button newerLeft= new Button("NewerLeft");
-    private final Button newerRight= new Button("NewerRight");
-    private final Button orphanb= new Button("Orphan");
-    private final Button sameb= new Button("Same");
-    private final Button folder= new Button("Folder");
+    private final ToggleButton all= new ToggleButton("All");
+    private final ToggleButton newerLeft= new ToggleButton("NewerLeft");
+    private final ToggleButton newerRight= new ToggleButton("NewerRight");
+    private final ToggleGroup groupNewer = new ToggleGroup();
+    private final ToggleButton orphanb= new ToggleButton("Orphan");
+    private final ToggleButton sameb= new ToggleButton("Same");
+    private final ToggleButton folder= new ToggleButton("Folder");
     Image imageOk = new Image(getClass().getResourceAsStream("folder-icon.png"));
+    private final  Separator separator = new Separator(VERTICAL);
+    private final  Separator separator2 = new Separator(VERTICAL);
+    private final  Separator separator3 = new Separator(VERTICAL);
     private final Button button = new Button("", new ImageView(imageOk));
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final DirectoryChooser directoryChooser2 = new DirectoryChooser();
@@ -168,7 +176,9 @@ public class View extends VBox{
         boxEtats.setSpacing(10);
         boxEtats.setPadding(new Insets(5, 5, 5, 5));
         boxEtats.setAlignment(Pos.CENTER);
-        boxBouton.getChildren().addAll(all,newerLeft,newerRight,orphanb,sameb,folder);
+        groupNewer.getToggles().add(newerLeft);
+        groupNewer.getToggles().add(newerRight);
+        boxBouton.getChildren().addAll(all,separator,newerLeft,newerRight,separator2,orphanb,sameb,separator3,folder);
         boxBouton.setSpacing(10);
         boxBouton.setPadding(new Insets(5, 5, 0, 5));
         boxBouton.setAlignment(Pos.CENTER);
@@ -207,6 +217,8 @@ public class View extends VBox{
         text2.textProperty().bindBidirectional(viewModel.pathRightProperty());
         treeTableView.rootProperty().bindBidirectional(viewModel.fichierGaucheProperty());
         treeTableView2.rootProperty().bindBidirectional(viewModel.fichierDroiteProperty()); 
+        all.selectedProperty().bindBidirectional(viewModel.allSelectedProperty());
+        newerLeft.selectedProperty().bindBidirectional(viewModel.newerLeftSelectedProperty());
     }
     
     public void configViewModelBindings() throws IOException{
