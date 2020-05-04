@@ -131,7 +131,8 @@ public class ViewModel {
     }
     
     public void all() throws IOException{
-        Model model = new Model();
+        //Model model = new Model();
+        model.modif(pathGauche.get(),pathDroite.get() );
         fichierLeft.set(model.getLeft());
         fichierRight.set(model.getRight());
         newerLeftSelected.set(false);

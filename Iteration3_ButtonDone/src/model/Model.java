@@ -26,8 +26,8 @@ import javafx.beans.property.StringProperty;
  */
 public class Model {
     
-    private StringProperty pathGauche = new SimpleStringProperty("C:\\Users\\kuo\\Desktop\\anc31920_gr8\\Iteration3\\TestBC\\RootBC_Left");
-    private StringProperty pathDroite = new SimpleStringProperty("C:\\Users\\kuo\\Desktop\\anc31920_gr8\\Iteration3\\TestBC\\RootBC_Right");
+    private StringProperty pathGauche = new SimpleStringProperty("TestBC/RootBC_Left");
+    private StringProperty pathDroite = new SimpleStringProperty("TestBC/RootBC_Right");
     private Path base1 = Paths.get(pathGauche.get()) ;
     private Path base2 = Paths.get(pathDroite.get()) ;
     private Fichier Gauche = new Dossier(pathGauche.get(), 'D',base1,true);
@@ -35,7 +35,9 @@ public class Model {
     private Fichier gaucheModif;
     private Fichier droitModif;
     
-    public Model() throws IOException{  
+    public Model() throws IOException{
+        base1 = base1.toAbsolutePath();
+        base2 = base2.toAbsolutePath();
         init();
     }
     
