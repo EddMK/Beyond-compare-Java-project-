@@ -37,9 +37,11 @@ public class ViewModel {
     private final BooleanProperty sameSelected = new SimpleBooleanProperty(false);
     private final BooleanProperty foldersOnlySelected = new SimpleBooleanProperty(false);
     private final Model model;
+    private final EditVM editor;
     
     public ViewModel(Model model) throws IOException{
         this.model=model; 
+        this.editor = new EditVM(this);
         fichierLeft = new SimpleObjectProperty<>(model.getLeft());
         fichierRight = new SimpleObjectProperty<>(model.getRight());
         pathGauche.addListener((o,oldValue,newValue) -> {
@@ -140,5 +142,14 @@ public class ViewModel {
         orphanSelected.set(false);
         sameSelected.set(false);
         foldersOnlySelected.set(false);
+    }
+    
+    public void openSelectedFile() {
+        editor.setText("essai");
+        editor.setVisible(true);
+    }
+    
+    public EditVM getEditVM() {
+        return editor;
     }
 }

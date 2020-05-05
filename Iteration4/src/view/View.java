@@ -28,7 +28,6 @@ import javafx.stage.Stage;
 import model.Etat;
 import model.Fichier;
 import viewmodel.ViewModel;
-
 /**
  *
  * @author kuo
@@ -65,11 +64,16 @@ public class View extends VBox{
     private final TreeTableView<Fichier> treeTableView2 = new TreeTableView<>() ;
     
     public View(Stage primaryStage, ViewModel viewModel) throws IOException {
+        new EditView(primaryStage, viewModel.getEditVM());
         this.viewModel = viewModel;
         configDataBindings();
         configAllListener();
         
-        
+        treeTableView.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                viewModel.openSelectedFile();
+            }
+        });
         
         TextFlow flow = new TextFlow();
         text1.setStyle("-fx-font-weight: bold");

@@ -270,9 +270,6 @@ public class Model {
     public static void recursif(Path racine, Fichier source,Path compare, Path pathRoot) throws IOException{
         List<Fichier> fichiers;
         fichiers = new ArrayList<>();
-        System.out.println(racine.toString());
-        System.out.println(compare.toString());
-        System.out.println(pathRoot.toString());
         Path with = compare;
         Path a = pathRoot;
         File file = new File(racine.toString());
@@ -285,16 +282,11 @@ public class Model {
                 source.ajoutFichier(x);               
             }else{
                 Path path = files[i].toPath();
-                System.out.println(path.toString());
                 Path aCompare = compare.resolve(a.relativize(path));
-                System.out.println(aCompare.toString());
                 File fileCompare = new File(aCompare.toString());
                 Etat etat;              
                 if( existFile(aCompare) && fileCompare.isFile() ){
-                    System.out.println(lastModificationTime(path));
-                    System.out.println(lastModificationTime(aCompare));
                     int comparaison = lastModificationTime(path).compareTo(lastModificationTime(aCompare));
-                    System.out.println(comparaison);
                     if(comparaison >0){
                         etat =Etat.NEWER;
                     }else if(comparaison == 0){
