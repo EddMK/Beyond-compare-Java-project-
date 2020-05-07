@@ -42,8 +42,8 @@ public class Model {
     }
     
     public void init() throws IOException{
-        recursif(base1,Gauche, base2,base1);
-        recursif(base2,Droite, base1,base2);
+        buildTree(base1,Gauche, base2,base1);
+        buildTree(base2,Droite, base1,base2);
     }
     
     public void modif(String newPathGauche, String newPathDroite) throws IOException{
@@ -54,10 +54,10 @@ public class Model {
         
         
         Droite = new Dossier(newPathDroite, 'D',base2,true);
-        recursif(base2,Droite, base1,base2);
+        buildTree(base2,Droite, base1,base2);
         
         Gauche = new Dossier(newPathGauche, 'D',base1,true);
-        recursif(base1,Gauche, base2, base1);
+        buildTree(base1,Gauche, base2, base1);
         
         
     }
@@ -69,28 +69,18 @@ public class Model {
     public StringProperty pathRightProperty(){
         return this.pathDroite;
     }
-    
-    public Fichier retourneGauche(){
+  
+    public TreeItem<Fichier> getLeft() throws IOException{
         return Gauche;
     }
     
-    public Fichier retourneDroite(){
+    public TreeItem<Fichier> getRight() throws IOException{
         return Droite;
     }
     
-    public TreeItem<Fichier> getLeft() throws IOException{
-        TreeItem<Fichier> a = makeTreeRoot(Gauche);
-        return a;
-    }
-    
-    public TreeItem<Fichier> getRight() throws IOException{
-        TreeItem<Fichier> a = makeTreeRoot(Droite);
-        return a;
-    }
-    
     public void boutons(boolean newerLeft, boolean newerRight, boolean orphan, boolean same, boolean folders){
-        gaucheModif = new Dossier(Gauche.nom(),Gauche.type(),Gauche.path(),true);
-        droitModif = new Dossier(Droite.nom(),Droite.type(),Droite.path(),true);
+        gaucheModif = new Dossier(Gauche.getNom(),Gauche.type(),Gauche.path(),true);
+        droitModif = new Dossier(Droite.getNom(),Droite.type(),Droite.path(),true);
         if(newerLeft == true || newerRight == true){
             if(newerLeft){
                     if(orphan== true && same == true){
@@ -158,11 +148,11 @@ public class Model {
             if(se.type()=='D'){    
                 if(se.getSelected().contains(e)){
                     //(String nom, char type, Path path, Boolean tete)
-                    Fichier x = new Dossier(se.nom(),se.type(),se.path(),false);
+                    Fichier x = new Dossier(se.getNom(),se.type(),se.path(),false);
                     x.setEtat(se.etat());
-                    System.out.println(se.taille());
-                    x.setTaille(se.taille());
-                    System.out.println(x.taille());
+                    System.out.println(se.getSize());
+                    x.setSize(se.getSize());
+                    System.out.println(x.getSize());
                     nouveau.ajoutFichier(x);
                     newer(se,x,e,folders);
                 }
@@ -170,7 +160,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(folders == false){
                     if(se.etat()==e){
-                        FichierSimple x = new FichierSimple(se.nom(),se.type(),se.path(),se.taille(),se.etat());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -183,9 +173,9 @@ public class Model {
         base.fichiers().forEach(se -> {
             if(se.type()=='D'){    
                     //(String nom, char type, Path path, Boolean tete)
-                    Fichier x = new Dossier(se.nom(),se.type(),se.path(),false);
+                    Fichier x = new Dossier(se.getNom(),se.type(),se.path(),false);
                     x.setEtat(se.etat());
-                    x.setTaille(se.taille());
+                    x.setSize(se.getSize());
                     nouveau.ajoutFichier(x);
                     foldersOnly(se,x);
             }
@@ -199,9 +189,9 @@ public class Model {
             if(se.type()=='D'){    
                 if(se.getSelected().contains(e) || se.getSelected().contains(Etat.ORPHAN) || se.getSelected().contains(Etat.SAME)){
                     //(String nom, char type, Path path, Boolean tete)
-                    Fichier x = new Dossier(se.nom(),se.type(),se.path(),false);
+                    Fichier x = new Dossier(se.getNom(),se.type(),se.path(),false);
                     x.setEtat(se.etat());
-                    x.setTaille(se.taille());
+                    x.setSize(se.getSize());
                     nouveau.ajoutFichier(x);
                     newerOrphanSame(se,x,e,foldersOnly);
                 }
@@ -209,7 +199,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(foldersOnly == false){
                     if(se.etat()==e || se.etat()==Etat.ORPHAN || se.etat()==Etat.SAME){
-                        FichierSimple x = new FichierSimple(se.nom(),se.type(),se.path(),se.taille(),se.etat());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -223,9 +213,9 @@ public class Model {
             if(se.type()=='D'){    
                 if(se.getSelected().contains(e) || se.getSelected().contains(Etat.ORPHAN)){
                     //(String nom, char type, Path path, Boolean tete)
-                    Fichier x = new Dossier(se.nom(),se.type(),se.path(),false);
+                    Fichier x = new Dossier(se.getNom(),se.type(),se.path(),false);
                     x.setEtat(se.etat());
-                    x.setTaille(se.taille());
+                    x.setSize(se.getSize());
                     nouveau.ajoutFichier(x);
                     newerOrphan(se,x,e,foldersOnly);
                 }
@@ -233,7 +223,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(foldersOnly == false){
                     if(se.etat()==e || se.etat()==Etat.ORPHAN){
-                        FichierSimple x = new FichierSimple(se.nom(),se.type(),se.path(),se.taille(),se.etat());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -248,9 +238,9 @@ public class Model {
             if(se.type()=='D'){    
                 if(se.getSelected().contains(e) || se.getSelected().contains(Etat.SAME) ){
                     //(String nom, char type, Path path, Boolean tete)
-                    Fichier x = new Dossier(se.nom(),se.type(),se.path(),false);
+                    Fichier x = new Dossier(se.getNom(),se.type(),se.path(),false);
                     x.setEtat(se.etat());
-                    x.setTaille(se.taille());
+                    x.setSize(se.getSize());
                     nouveau.ajoutFichier(x);
                     newerSame(se,x,e,foldersOnly);
                 }
@@ -258,7 +248,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(foldersOnly == false){
                     if(se.etat()==e || se.etat()==Etat.SAME){
-                        FichierSimple x = new FichierSimple(se.nom(),se.type(),se.path(),se.taille(),se.etat());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -267,7 +257,7 @@ public class Model {
         });   
     }
     
-    public static void recursif(Path racine, Fichier source,Path compare, Path pathRoot) throws IOException{
+    public static void buildTree(Path racine, Fichier source,Path compare, Path pathRoot) throws IOException{
         List<Fichier> fichiers;
         fichiers = new ArrayList<>();
         Path with = compare;
@@ -278,7 +268,7 @@ public class Model {
             if(files[i].isDirectory()){
                 Fichier x = new Dossier(files[i].getName(), 'D',Paths.get(files[i].getAbsolutePath()),false);
                 fichiers.add(x);
-                recursif(files[i].toPath(),x,with,a);               
+                buildTree(files[i].toPath(),x,with,a);               
                 source.ajoutFichier(x);               
             }else{
                 Path path = files[i].toPath();
@@ -297,8 +287,8 @@ public class Model {
                 }else{
                     etat =Etat.ORPHAN;
                 }                             
-                Fichier x = new FichierSimple(files[i].getName(), 'F', files[i].toPath(),(int) files[i].length(),etat);
-                source.ajoutFichier(new FichierSimple(files[i].getName(), 'F', files[i].toPath(),(int) files[i].length(),etat));
+                Fichier x = new FichierSimple(files[i].getName(), 'F', files[i].toPath(),files[i].length(),etat);
+                source.ajoutFichier(new FichierSimple(files[i].getName(), 'F', files[i].toPath(),files[i].length(),etat));
                 fichiers.add(x);
             }              
         }

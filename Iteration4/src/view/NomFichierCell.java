@@ -16,7 +16,7 @@ public class NomFichierCell extends FichierCell{
     
     @Override
     String texte(Fichier elem) {
-        return elem.nom();
+        return elem.getNom();
     }
     
 }

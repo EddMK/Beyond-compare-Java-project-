@@ -75,6 +75,12 @@ public class View extends VBox{
             }
         });
         
+        treeTableView2.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                viewModel.openSelectedFile();
+            }
+        });
+        
         TextFlow flow = new TextFlow();
         text1.setStyle("-fx-font-weight: bold");
         flow.getChildren().addAll(text1);
@@ -90,10 +96,6 @@ public class View extends VBox{
         HBox path2 = new HBox();
         path2.getChildren().addAll(flow2);
         path2.setAlignment(Pos.CENTER);
-        
-        
-        //treeTableView = new TreeTableView<>();
-        //treeTableView2 = new TreeTableView<>();
         
         TreeTableColumn<Fichier, Fichier> 
                 nameCol = new TreeTableColumn<>("Nom"),

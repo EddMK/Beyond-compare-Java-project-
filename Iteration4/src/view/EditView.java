@@ -5,9 +5,13 @@
  */
 package view;
 
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import viewmodel.EditVM;
@@ -23,14 +27,21 @@ public class EditView extends Stage{
         initOwner(primaryStage);
         TextArea textArea = new TextArea();
         textArea.setWrapText(true);
+        textArea.textProperty().bindBidirectional(editVM.textProperty());
         StackPane stackPane = new StackPane(textArea);
+        VBox scene2 = new VBox(textArea);
+        
+        Button save = new Button("save");
+        HBox boxButton = new HBox(save);
+        boxButton.setAlignment(Pos.CENTER);
+        scene2.getChildren().add(boxButton);
         
         setOnHiding((e) -> editVM.setVisible(false));
         editVM.showingProperty().addListener((obj, old, act) -> {
             if(act) showAndWait();
         });
         
-        Scene scene = new Scene(stackPane, 600, 400);        
+        Scene scene = new Scene(scene2);        
         setScene(scene);
         /*
         titleProperty().bind(editVM.fileNameProperty().

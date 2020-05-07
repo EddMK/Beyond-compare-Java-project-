@@ -36,6 +36,7 @@ public class ViewModel {
     private final BooleanProperty orphanSelected = new SimpleBooleanProperty(false);
     private final BooleanProperty sameSelected = new SimpleBooleanProperty(false);
     private final BooleanProperty foldersOnlySelected = new SimpleBooleanProperty(false);
+    private final StringProperty selectedFileName = new SimpleStringProperty();
     private final Model model;
     private final EditVM editor;
     
@@ -130,6 +131,10 @@ public class ViewModel {
     
     public BooleanProperty foldersOnlySelectedProperty(){
         return this.foldersOnlySelected;
+    }
+    
+    public StringProperty selectedFileNameProperty() {
+        return selectedFileName;
     }
     
     public void all() throws IOException{

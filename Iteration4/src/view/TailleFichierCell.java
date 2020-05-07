@@ -16,7 +16,7 @@ public class TailleFichierCell extends FichierCell {
 
     @Override
     String texte(Fichier elem) {
-        return ""+elem.taille();
+        return ""+elem.getSize();
     }
     
 }

@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleLongProperty;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -19,13 +20,12 @@ import java.util.logging.Logger;
  * @author kuo
  */
 public class FichierSimple extends Fichier {
-    private final int taille;
     private Etat etat;
 
-    public FichierSimple(String nom, char type, Path path,int taille, Etat etat) {
+    public FichierSimple(String nom, char type, Path path,Long size,Etat etat) {
         super(nom,type, path);
-        this.taille = taille;
         this.etat=etat;
+        this.setSize(size);
 
     }
     
@@ -34,15 +34,6 @@ public class FichierSimple extends Fichier {
         etat=newEtat;
     }
 
-    @Override
-    public int taille() {
-        return taille;
-    }
-    
-    @Override
-    public void setTaille(int newSize){
-        throw new UnsupportedOperationException("Not supported."); 
-    }
     
     @Override
     public Etat etat() {
@@ -52,9 +43,9 @@ public class FichierSimple extends Fichier {
     @Override
     protected String formatAffichage(int decalage) {       
         try{       
-            return super.formatAffichage(decalage) + nom() +" " +  type()  + "  "+ 
+            return super.formatAffichage(decalage) + getNom() +" " +  type()  + "  "+ 
                     lastModificationTime(path()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))+
-                    " "+taille()+" "+etat()+"\n";
+                    " "+getSize()+" "+etat()+"\n";
         }catch (IOException ex) {
             Logger.getLogger(FichierSimple.class.getName()).log(Level.SEVERE, null, ex);
         }

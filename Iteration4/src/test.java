@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 public class test{
     
     public static void main(String[] args) {
+        
         StringProperty pathGauche = new SimpleStringProperty("Je mange");
         
         StringProperty pathDroite = new SimpleStringProperty(" bien");
@@ -41,5 +42,10 @@ public class test{
         sum.setValue("pas");
         //System.out.println(pathDroite.get());   
         //System.out.println(pathDroite);
+        /*
+        long size;
+        size = (long) 5.5;
+        System.out.println(size);
+        */
     }
 }
