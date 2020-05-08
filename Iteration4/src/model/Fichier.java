@@ -85,21 +85,7 @@ public abstract class Fichier extends TreeItem<Fichier> {
         return nom;
     }
     
-    public static LocalDateTime lastModificationTime(Path path) throws IOException {
-        BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
-        LocalDateTime result = attrs.lastModifiedTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        if (Files.isDirectory(path)) {
-            try (DirectoryStream<Path> dir = Files.newDirectoryStream(path)) {
-                for (Path p : dir) {
-                    LocalDateTime tmp = lastModificationTime(p);
-                    if (tmp.isAfter(result)) {
-                        result = tmp;
-                    }
-                }
-            }
-        }
-        return result;
-    }
+
     
     
     protected String formatAffichage(int decalage) {
@@ -166,6 +152,7 @@ public abstract class Fichier extends TreeItem<Fichier> {
         return formatAffichage(0);
     }
     
-
+    public abstract String getTextArea();
+    public abstract void setTextArea(String text);
     public abstract Iterable<Fichier> fichiers();
 }

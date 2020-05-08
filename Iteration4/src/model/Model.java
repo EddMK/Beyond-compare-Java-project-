@@ -133,13 +133,11 @@ public class Model {
     }
  
     public TreeItem<Fichier> getGaucheModif(){
-        TreeItem<Fichier> a = makeTreeRoot(gaucheModif);
-        return a;
+        return gaucheModif;
     }
     
     public TreeItem<Fichier> getDroiteModif(){
-        TreeItem<Fichier> a = makeTreeRoot(droitModif);
-        return a;
+        return droitModif;
     }
     
 
@@ -160,7 +158,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(folders == false){
                     if(se.etat()==e){
-                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat(),se.getTextArea());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -199,7 +197,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(foldersOnly == false){
                     if(se.etat()==e || se.etat()==Etat.ORPHAN || se.etat()==Etat.SAME){
-                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat(),se.getTextArea());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -223,7 +221,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(foldersOnly == false){
                     if(se.etat()==e || se.etat()==Etat.ORPHAN){
-                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat(),se.getTextArea());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -248,7 +246,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(foldersOnly == false){
                     if(se.etat()==e || se.etat()==Etat.SAME){
-                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat(),se.getTextArea());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -286,9 +284,11 @@ public class Model {
                     }
                 }else{
                     etat =Etat.ORPHAN;
-                }                             
-                Fichier x = new FichierSimple(files[i].getName(), 'F', files[i].toPath(),files[i].length(),etat);
-                source.ajoutFichier(new FichierSimple(files[i].getName(), 'F', files[i].toPath(),files[i].length(),etat));
+                } 
+                Path fichierSimple = files[i].toPath();
+                String textArea = loadFile(fichierSimple.toString());
+                Fichier x = new FichierSimple(files[i].getName(), 'F', fichierSimple,files[i].length(),etat,textArea);
+                source.ajoutFichier(new FichierSimple(files[i].getName(), 'F', files[i].toPath(),files[i].length(),etat,textArea));
                 fichiers.add(x);
             }              
         }
@@ -349,6 +349,15 @@ public class Model {
         System.out.println("");
     } 
     
+    private static String loadFile(String fileName) {
+        Path path = Paths.get(fileName);
+        try {
+            return new String(Files.readAllBytes(path));
+        } catch (IOException ex) {
+            return "";
+        }
+    }
+    
     public static  boolean existFile(Path chemin){
         File comparateur = new File(chemin.toString());
         return comparateur.exists();
@@ -380,5 +389,16 @@ public class Model {
         }
         return res;
     }
+    
+    public void bindModif(Fichier f,String text, int size) {
+        System.out.println(f.getSize());
+        if(f.type()=='F'){
+            f.setSize(size);//renvoyer la nouvelle taille
+            f.setDateTime(LocalDateTime.now());
+            f.setTextArea(text);
+        }
+        System.out.println(f.getSize());
+    }
+    
         
 }

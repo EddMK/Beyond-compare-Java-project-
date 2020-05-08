@@ -109,6 +109,16 @@ public class Dossier extends Fichier{
     public Iterable<Fichier> fichiers() {
         return fichiers;
     }
+
+    @Override
+    public String getTextArea() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setTextArea(String text) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
         
     // Un Binding pour le recalcul de la taille

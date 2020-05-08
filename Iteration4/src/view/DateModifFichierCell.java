@@ -2,6 +2,7 @@ package view;
 
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Fichier;
@@ -20,12 +21,7 @@ public class DateModifFichierCell extends FichierCell {
 
     @Override
     String texte(Fichier elem) {
-        try {
-            return ""+Fichier.lastModificationTime(elem.path());
-        } catch (IOException ex) {
-            Logger.getLogger(DateModifFichierCell.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        return ""+elem.getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
     
 }

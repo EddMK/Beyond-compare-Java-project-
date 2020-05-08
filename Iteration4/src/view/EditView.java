@@ -5,6 +5,7 @@
  */
 package view;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -32,6 +33,10 @@ public class EditView extends Stage{
         VBox scene2 = new VBox(textArea);
         
         Button save = new Button("save");
+        save.setOnAction((ActionEvent event) -> {
+            editVM.save();
+            editVM.setVisible(false);
+        });
         HBox boxButton = new HBox(save);
         boxButton.setAlignment(Pos.CENTER);
         scene2.getChildren().add(boxButton);
@@ -43,12 +48,12 @@ public class EditView extends Stage{
         
         Scene scene = new Scene(scene2);        
         setScene(scene);
-        /*
+       
         titleProperty().bind(editVM.fileNameProperty().
                 concat(" : ").
                 concat(editVM.textLengthProperty()).
                 concat(" octets")
-        );*/
+        );
     }
-    
+   
 }

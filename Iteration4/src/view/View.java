@@ -69,15 +69,18 @@ public class View extends VBox{
         configDataBindings();
         configAllListener();
         
+        viewModel.selectedFileLeftProperty().bind(treeTableView.getSelectionModel().selectedItemProperty());
+        viewModel.selectedFileRightProperty().bind(treeTableView2.getSelectionModel().selectedItemProperty());
+        
         treeTableView.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) {
-                viewModel.openSelectedFile();
+                viewModel.openSelectedLeftFile();
             }
         });
         
         treeTableView2.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) {
-                viewModel.openSelectedFile();
+                viewModel.openSelectedRightFile();
             }
         });
         

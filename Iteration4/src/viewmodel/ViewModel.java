@@ -8,6 +8,9 @@ package viewmodel;
 
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
@@ -36,7 +39,10 @@ public class ViewModel {
     private final BooleanProperty orphanSelected = new SimpleBooleanProperty(false);
     private final BooleanProperty sameSelected = new SimpleBooleanProperty(false);
     private final BooleanProperty foldersOnlySelected = new SimpleBooleanProperty(false);
-    private final StringProperty selectedFileName = new SimpleStringProperty();
+    private final ObjectProperty<TreeItem<Fichier>> selectedFileLeft = new SimpleObjectProperty<>();
+    private final ObjectProperty<TreeItem<Fichier>> selectedFileRight = new SimpleObjectProperty<>();
+    private final ObjectProperty<TreeItem<Fichier>> currentFileSelected = new SimpleObjectProperty<>();
+    private final StringProperty currentNameFileSelected = new SimpleStringProperty();
     private final Model model;
     private final EditVM editor;
     
@@ -88,9 +94,19 @@ public class ViewModel {
             model.boutons(newerLeftSelected.get(),newerRightSelected.get() ,orphanSelected.get(), sameSelected.get(), newValue);
             fichierLeft.set(model.getGaucheModif());//Gauche newer
             fichierRight.set(model.getDroiteModif());// Droite older
+        }); 
+        selectedFileLeft.addListener((o,oldValue,newValue) ->{ 
+            currentNameFileSelected.set(newValue.getValue().getNom());
+            currentFileSelected.set(newValue);
         });
-
-        
+        selectedFileRight.addListener((o,oldValue,newValue) ->{ 
+            currentNameFileSelected.set(newValue.getValue().getNom());
+            currentFileSelected.set(newValue);
+        });
+    }
+    
+    public StringProperty selectedFileNameProperty(){
+        return this.currentNameFileSelected;
     }
     
     public StringProperty pathLeftProperty(){
@@ -133,8 +149,16 @@ public class ViewModel {
         return this.foldersOnlySelected;
     }
     
-    public StringProperty selectedFileNameProperty() {
-        return selectedFileName;
+    public ObjectProperty<TreeItem<Fichier>> selectedFileLeftProperty() {
+        return selectedFileLeft;
+    }
+    
+    public ObjectProperty<TreeItem<Fichier>> selectedFileRightProperty() {
+        return selectedFileRight;
+    }//currentFileSelected
+    
+    public ObjectProperty<TreeItem<Fichier>> currentFileSelectedProperty() {
+        return currentFileSelected;
     }
     
     public void all() throws IOException{
@@ -149,12 +173,26 @@ public class ViewModel {
         foldersOnlySelected.set(false);
     }
     
-    public void openSelectedFile() {
-        editor.setText("essai");
+    public void openSelectedLeftFile() {
+        //editor.setText(selectedFileLeft.getValue().getValue().getTextArea());
+        editor.setVisible(true);
+    }
+    
+    public void openSelectedRightFile() {
+        //editor.setText(selectedFileRight.getValue().getValue().getTextArea());
         editor.setVisible(true);
     }
     
     public EditVM getEditVM() {
         return editor;
     }
+    
+    public void save(String newText,int newSize) throws IOException{
+        model.bindModif(currentFileSelected.get().getValue(),newText,newSize);
+        fichierLeft.set(model.getLeft());
+        fichierRight.set(model.getRight());
+        System.out.println(model.getLeft());
+    }
+    
+    
 }

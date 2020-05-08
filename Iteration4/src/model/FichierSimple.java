@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -21,12 +23,13 @@ import javafx.beans.property.SimpleLongProperty;
  */
 public class FichierSimple extends Fichier {
     private Etat etat;
+    private final StringProperty text;
 
-    public FichierSimple(String nom, char type, Path path,Long size,Etat etat) {
+    public FichierSimple(String nom, char type, Path path,Long size,Etat etat,String text) {
         super(nom,type, path);
         this.etat=etat;
         this.setSize(size);
-
+        this.text = new SimpleStringProperty(text);
     }
     
     @Override
@@ -42,14 +45,9 @@ public class FichierSimple extends Fichier {
     
     @Override
     protected String formatAffichage(int decalage) {       
-        try{       
-            return super.formatAffichage(decalage) + getNom() +" " +  type()  + "  "+ 
-                    lastModificationTime(path()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))+
-                    " "+getSize()+" "+etat()+"\n";
-        }catch (IOException ex) {
-            Logger.getLogger(FichierSimple.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return "";
+        return super.formatAffichage(decalage) + getNom() +" " +  type()  + "  "+
+                getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))+
+                " "+getSize()+" "+etat()+"\n";
     }
 
     @Override
@@ -71,6 +69,16 @@ public class FichierSimple extends Fichier {
     @Override
     public List<Etat> getSelected(){
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getTextArea() {
+        return this.text.get();
+    }
+
+    @Override
+    public void setTextArea(String text) {
+        this.text.set(text);
     }
 
 }
