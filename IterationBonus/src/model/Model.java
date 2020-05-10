@@ -77,7 +77,7 @@ public class Model {
     public TreeItem<Fichier> getRight() throws IOException{
         return Droite;
     }
-    
+    /*
     public void boutons(boolean newerLeft, boolean newerRight, boolean orphan, boolean same, boolean folders){
         gaucheModif = new Dossier(Gauche.getNom(),Gauche.type(),Gauche.path(),true);
         droitModif = new Dossier(Droite.getNom(),Droite.type(),Droite.path(),true);
@@ -144,15 +144,13 @@ public class Model {
     
 
     public static void newer(Fichier base, Fichier nouveau, Etat e, Boolean folders){
-        base.fichiers().forEach(se -> {
+        base.getContent().forEach(se -> {
             if(se.type()=='D'){    
                 if(se.getSelected().contains(e)){
                     //(String nom, char type, Path path, Boolean tete)
                     Fichier x = new Dossier(se.getNom(),se.type(),se.path(),false);
-                    x.setEtat(se.etat());
-                    System.out.println(se.getSize());
-                    x.setSize(se.getSize());
-                    System.out.println(x.getSize());
+                    x.setEtat(se.getValue().etat());
+                    x.bindSizeTo(se.sizeProperty().asObject());
                     nouveau.ajoutFichier(x);
                     newer(se,x,e,folders);
                 }
@@ -160,7 +158,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(folders == false){
                     if(se.etat()==e){
-                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat(),se.getTextArea());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.getDateTime(),se.etat(),se.getTextArea());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -170,12 +168,12 @@ public class Model {
     }
     
     public static void foldersOnly(Fichier base, Fichier nouveau){
-        base.fichiers().forEach(se -> {
+        base.getContent().forEach(se -> {
             if(se.type()=='D'){    
                     //(String nom, char type, Path path, Boolean tete)
                     Fichier x = new Dossier(se.getNom(),se.type(),se.path(),false);
                     x.setEtat(se.etat());
-                    x.setSize(se.getSize());
+                    x.bindSizeTo(se.sizeProperty().asObject());
                     nouveau.ajoutFichier(x);
                     foldersOnly(se,x);
             }
@@ -184,14 +182,13 @@ public class Model {
     
     
     public static void newerOrphanSame(Fichier base, Fichier nouveau, Etat e, Boolean foldersOnly){
-        
-        base.fichiers().forEach(se -> {
+        base.getContent().forEach(se -> {
             if(se.type()=='D'){    
                 if(se.getSelected().contains(e) || se.getSelected().contains(Etat.ORPHAN) || se.getSelected().contains(Etat.SAME)){
                     //(String nom, char type, Path path, Boolean tete)
                     Fichier x = new Dossier(se.getNom(),se.type(),se.path(),false);
                     x.setEtat(se.etat());
-                    x.setSize(se.getSize());
+                    x.bindSizeTo(se.sizeProperty().asObject());
                     nouveau.ajoutFichier(x);
                     newerOrphanSame(se,x,e,foldersOnly);
                 }
@@ -199,7 +196,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(foldersOnly == false){
                     if(se.etat()==e || se.etat()==Etat.ORPHAN || se.etat()==Etat.SAME){
-                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat(),se.getTextArea());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.getDateTime(),se.etat(),se.getTextArea());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -209,13 +206,13 @@ public class Model {
     }
     
     public static void newerOrphan(Fichier base, Fichier nouveau, Etat e, Boolean foldersOnly){
-        base.fichiers().forEach(se -> {
+        base.getContent().forEach(se -> {
             if(se.type()=='D'){    
                 if(se.getSelected().contains(e) || se.getSelected().contains(Etat.ORPHAN)){
                     //(String nom, char type, Path path, Boolean tete)
                     Fichier x = new Dossier(se.getNom(),se.type(),se.path(),false);
                     x.setEtat(se.etat());
-                    x.setSize(se.getSize());
+                    x.bindSizeTo(se.sizeProperty().asObject());
                     nouveau.ajoutFichier(x);
                     newerOrphan(se,x,e,foldersOnly);
                 }
@@ -223,7 +220,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(foldersOnly == false){
                     if(se.etat()==e || se.etat()==Etat.ORPHAN){
-                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat(),se.getTextArea());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.getDateTime(),se.etat(),se.getTextArea());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -234,13 +231,13 @@ public class Model {
     
     
     public static void newerSame(Fichier base, Fichier nouveau, Etat e, Boolean foldersOnly){
-        base.fichiers().forEach(se -> {
+        base.getContent().forEach(se -> {
             if(se.type()=='D'){    
                 if(se.getSelected().contains(e) || se.getSelected().contains(Etat.SAME) ){
                     //(String nom, char type, Path path, Boolean tete)
                     Fichier x = new Dossier(se.getNom(),se.type(),se.path(),false);
                     x.setEtat(se.etat());
-                    x.setSize(se.getSize());
+                    x.bindSizeTo(se.sizeProperty().asObject());
                     nouveau.ajoutFichier(x);
                     newerSame(se,x,e,foldersOnly);
                 }
@@ -248,7 +245,7 @@ public class Model {
                 //String nom, char type, Path path,int taille, Etat etat
                 if(foldersOnly == false){
                     if(se.etat()==e || se.etat()==Etat.SAME){
-                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.etat(),se.getTextArea());
+                        FichierSimple x = new FichierSimple(se.getNom(),se.type(),se.path(),se.getSize(),se.getDateTime(),se.etat(),se.getTextArea());
                         x.setEtat(se.etat());
                         nouveau.ajoutFichier(x);
                     }
@@ -256,7 +253,7 @@ public class Model {
             }
         });   
     }
-    
+    */
     public static void buildTree(Path racine, Fichier source,Path compare, Path pathRoot) throws IOException{
         List<Fichier> fichiers;
         fichiers = new ArrayList<>();
@@ -289,8 +286,8 @@ public class Model {
                 } 
                 Path fichierSimple = files[i].toPath();
                 String textArea = loadFile(fichierSimple.toString());
-                Fichier x = new FichierSimple(files[i].getName(), 'F', fichierSimple,files[i].length(),etat,textArea);
-                source.ajoutFichier(new FichierSimple(files[i].getName(), 'F', files[i].toPath(),files[i].length(),etat,textArea));
+                Fichier x = new FichierSimple(files[i].getName(), 'F', fichierSimple,files[i].length(),lastModificationTime(fichierSimple),etat,textArea);
+                source.ajoutFichier(new FichierSimple(files[i].getName(), 'F', fichierSimple,files[i].length(),lastModificationTime(fichierSimple),etat,textArea));
                 fichiers.add(x);
             }              
         }
@@ -346,9 +343,7 @@ public class Model {
                 }
             }
         }
-        //System.out.println(selection);
         source.setSelected(selection);
-        System.out.println("");
     } 
     
     private static String loadFile(String fileName) {
@@ -380,27 +375,181 @@ public class Model {
         }
         return result;
     }
-    
-    public static TreeItem<Fichier> makeTreeRoot(Fichier root) {
-        TreeItem<Fichier> res = new TreeItem<>(root);
-        res.setExpanded(true);
-        if (root.type()=='D') {
-            root.fichiers().forEach(se -> {
-                res.getChildren().add(makeTreeRoot(se));
-            });
-        }
-        return res;
-    }
-    
+
     public void bindModif(Fichier f,String text, int size) {
-        System.out.println(f.getSize());
         if(f.type()=='F'){
             f.setSize(size);//renvoyer la nouvelle taille
             f.setDateTime(LocalDateTime.now());
             f.setTextArea(text);
         }
-        System.out.println(f.getSize());
     }
     
-        
+    public TreeItem<Fichier> getRootLeft(boolean newerLeft, boolean newerRight, boolean orphan, boolean same, boolean folders) {
+        TreeItem<Fichier> getLeft = new TreeItem<>();
+        if(newerLeft == true || newerRight == true){
+            if(newerLeft){
+                    if(orphan== true && same == true){
+                        getLeft = getStateWithOrphanSame(Gauche,Etat.NEWER,folders);
+                    }else if(orphan== true && same == false){
+                        getLeft =  getStateWithOrphan(Gauche,Etat.NEWER,folders);
+                    }else if(orphan== false && same == true){
+                        getLeft =  getStateWithSame(Gauche,Etat.NEWER,folders);
+                    }else{
+                        getLeft =  getOnlyOneState(Gauche,Etat.NEWER,folders);
+                    }  
+            }
+            if(newerRight){
+                if(orphan== true && same == true){
+                    getLeft =  getStateWithOrphanSame(Gauche,Etat.OLDER,folders);
+                }else if(orphan== true && same == false){
+                    getLeft =  getStateWithOrphan(Gauche,Etat.OLDER,folders);
+                }else if(orphan== false && same == true){
+                    getLeft =  getStateWithSame(Gauche,Etat.OLDER,folders);
+                }else{
+                    getLeft =  getOnlyOneState(Gauche,Etat.OLDER,folders);
+                }
+            }
+        }else if(orphan || same){
+            if(orphan == true && same == true){
+                getLeft =  getStateWithOrphan(Gauche,Etat.SAME,folders);
+            }else if(orphan == true && same == false){
+                getLeft =  getOnlyOneState(Gauche,Etat.ORPHAN,folders);
+            }else{
+                getLeft =  getOnlyOneState(Gauche,Etat.SAME,folders);
+            }
+        }else if(folders){
+            getLeft =  getOnlyFolders(Gauche);
+        }else{
+            getLeft =  Gauche;
+        }
+        return  getLeft ;
+    }
+    
+    
+    public TreeItem<Fichier> getRootRight(boolean newerLeft, boolean newerRight, boolean orphan, boolean same, boolean folders) {
+        TreeItem<Fichier> getRight = new TreeItem<Fichier>();
+        if(newerLeft == true || newerRight == true){
+            if(newerLeft){
+                    if(orphan== true && same == true){
+                        getRight = getStateWithOrphanSame(Droite,Etat.OLDER,folders);
+                    }else if(orphan== true && same == false){
+                        getRight =  getStateWithOrphan(Droite,Etat.OLDER,folders);
+                    }else if(orphan== false && same == true){
+                        getRight =  getStateWithSame(Droite,Etat.OLDER,folders);
+                    }else{
+                        getRight =  getOnlyOneState(Droite,Etat.OLDER,folders);
+                    }  
+            }
+            if(newerRight){
+                if(orphan== true && same == true){
+                    getRight =  getStateWithOrphanSame(Droite,Etat.NEWER,folders);
+                }else if(orphan== true && same == false){
+                    getRight =  getStateWithOrphan(Droite,Etat.NEWER,folders);
+                }else if(orphan== false && same == true){
+                    getRight =  getStateWithSame(Droite,Etat.NEWER,folders);
+                }else{
+                    getRight =  getOnlyOneState(Droite,Etat.NEWER,folders);
+                }
+            }
+        }else if(orphan || same){
+            if(orphan == true && same == true){
+                getRight =  getStateWithOrphan(Droite,Etat.SAME,folders);
+            }else if(orphan == true && same == false){
+                getRight =  getOnlyOneState(Droite,Etat.ORPHAN,folders);
+            }else{
+                getRight =  getOnlyOneState(Droite,Etat.SAME,folders);
+            }
+        }else if(folders){
+            getRight =  getOnlyFolders(Droite);
+        }else{
+            getRight =  Droite;
+        }
+        return  getRight ;
+    }
+    
+    
+    private TreeItem<Fichier> getOnlyFolders(Fichier dossier) {
+        TreeItem<Fichier> result = new TreeItem<>(dossier);
+        result.setExpanded(true);
+        dossier.getContent().stream().filter(f -> f.type()=='D').forEachOrdered((f) -> {
+            result.getChildren().add(getOnlyFolders(f));
+        });
+        return result;
+    }
+    
+    private TreeItem<Fichier> getStateWithOrphanSame(Fichier dossier, Etat e, Boolean foldersOnly){
+        TreeItem<Fichier> result = new TreeItem<>(dossier);
+        result.setExpanded(true);
+        dossier.getContent().forEach(se -> {
+            if(se.type()=='D'){    
+                if(se.getSelected().contains(e) || se.getSelected().contains(Etat.ORPHAN) || se.getSelected().contains(Etat.SAME)){
+                    result.getChildren().add(getStateWithOrphanSame(se,e,foldersOnly));
+                }
+            }else{
+                if(foldersOnly == false){
+                    if(se.etat()==e || se.etat()==Etat.ORPHAN || se.etat()==Etat.SAME){
+                        result.getChildren().add(se);
+                    }
+                }
+            }
+        }); 
+        return result;
+    }
+    
+    private TreeItem<Fichier> getStateWithOrphan(Fichier dossier,Etat e, boolean foldersOnly){
+        TreeItem<Fichier> result = new TreeItem<>(dossier);
+        result.setExpanded(true);
+        dossier.getContent().forEach(se -> {
+            if(se.type()=='D'){    
+                if(se.getSelected().contains(e) || se.getSelected().contains(Etat.ORPHAN)){
+                    result.getChildren().add(getStateWithOrphan(se,e,foldersOnly));
+                }
+            }else{
+                if(foldersOnly == false){
+                    if(se.etat()==e || se.etat()==Etat.ORPHAN){
+                        result.getChildren().add(se);
+                    }
+                }
+            }
+        }); 
+        return result;
+    }
+    
+    private TreeItem<Fichier> getStateWithSame(Fichier dossier,Etat e, boolean foldersOnly){
+        TreeItem<Fichier> result = new TreeItem<>(dossier);
+        result.setExpanded(true);
+        dossier.getContent().forEach(se -> {
+            if(se.type()=='D'){    
+                if(se.getSelected().contains(e) || se.getSelected().contains(Etat.SAME)){
+                    result.getChildren().add(getStateWithSame(se,e,foldersOnly));
+                }
+            }else{
+                if(foldersOnly == false){
+                    if(se.etat()==e || se.etat()==Etat.SAME){
+                        result.getChildren().add(se);
+                    }
+                }
+            }
+        }); 
+        return result;
+    }
+    
+    private TreeItem<Fichier> getOnlyOneState(Fichier dossier,Etat e, boolean foldersOnly){
+        TreeItem<Fichier> result = new TreeItem<>(dossier);
+        result.setExpanded(true);
+        dossier.getContent().forEach(se -> {
+            if(se.type()=='D'){    
+                if(se.getSelected().contains(e)){
+                    result.getChildren().add(getOnlyOneState(se,e,foldersOnly));
+                }
+            }else{
+                if(foldersOnly == false){
+                    if(se.etat()==e){
+                        result.getChildren().add(se);
+                    }
+                }
+            }
+        }); 
+        return result;
+    }
 }
